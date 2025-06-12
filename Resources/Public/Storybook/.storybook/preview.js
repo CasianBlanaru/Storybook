@@ -1,3 +1,4 @@
+// Resources/Public/Storybook/.storybook/preview.js
 import { FluidTemplate } from '../../JavaScript/FluidTemplate.ts';
 import { fetchTypo3Record } from '../../JavaScript/Typo3Data.ts';
 
