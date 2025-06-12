@@ -1,0 +1,6 @@
+# Configuration/Routes/Api.yaml
+fluid_storybook_render:
+  path: '/api/fluid/render'
+  methods: [GET] # Or [GET, POST] if you plan to support POST
+  defaults:
+    _controller: 'MyVendor\MyFluidStorybook\Controller\FluidRenderApiController::renderAction'
