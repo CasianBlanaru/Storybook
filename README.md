@@ -323,7 +323,15 @@ You can generate or update the manifest by running the following command from yo
 
 The command will output the path to the generated `template-manifest.json` file, which is located at:
 `packages/my_fluid_storybook/Resources/Public/Storybook/template-manifest.json`
-(Adjust path if your extension is installed in a different location like `typo3conf/ext/`).
+(Adjust path if your `my_fluid_storybook` extension is installed in a different location).
+
+### Command Behavior
+
+-   **Without arguments**: Scans all currently active TYPO3 extensions. It attempts to filter out common system and core extensions (e.g., `core`, `backend`, `fluid`, `extbase`, etc.) and the `my_fluid_storybook` extension itself. The goal is to discover templates in your site packages or custom component extensions.
+-   **With `extension-keys` argument(s)**: Scans only the specified extension(s). Multiple extension keys can be provided, separated by spaces.
+    Example: `./vendor/bin/typo3 storybook:generate-manifest my_site_package my_components_ext`
+
+The output `template-manifest.json` will aggregate findings from all successfully scanned extensions. The `extension` property within each manifest entry indicates its source extension.
 
 ### Output File Example (`template-manifest.json`)
 
@@ -361,6 +369,7 @@ The command will output the path to the generated `template-manifest.json` file,
 *(The content of the JSON above is illustrative and will reflect the actual files found in the `my_fluid_storybook` extension when the command is run.)*
 
 This command currently only scans the `my_fluid_storybook` extension itself. Future enhancements may allow scanning of other extensions.
+The above description reflects the enhanced command. The previous example output is illustrative of a single-extension scan. With multiple extensions, the list would contain entries from all of them.
 
 ### Using the Manifest in Stories (Example)
 
