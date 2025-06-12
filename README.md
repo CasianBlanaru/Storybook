@@ -293,6 +293,75 @@ ExampleComponent.args = {
 </div>
 ```
 
+## Template Manifest Generation (Experimental)
+
+This extension includes a CLI command to scan for Fluid templates, partials, and layouts within the `my_fluid_storybook` extension and generate a `template-manifest.json` file. This manifest is intended for future integration with Storybook to provide features like a template picker.
+
+### Purpose
+
+The `template-manifest.json` file contains a structured list of discoverable Fluid files:
+-   Templates (from `Resources/Private/Templates/`)
+-   Partials (from `Resources/Private/Partials/`)
+-   Layouts (from `Resources/Private/Layouts/`)
+
+Each entry includes its `EXT:...` path, type (Template, Partial, Layout), extension key, and a derived name.
+
+**Note:** Currently, this manifest file is generated but **not yet actively used** by the Storybook UI. Integration of this manifest is planned for a future update.
+
+### How to Run the Command
+
+You can generate or update the manifest by running the following command from your TYPO3 project root:
+
+```bash
+# If using TYPO3 Console composer installation
+./vendor/bin/typo3 storybook:generate-manifest
+
+# Or, if typo3_console is globally available or via other means
+# php typo3cms storybook:generate-manifest
+# (Actual command might vary based on your TYPO3 console setup)
+```
+
+The command will output the path to the generated `template-manifest.json` file, which is located at:
+`packages/my_fluid_storybook/Resources/Public/Storybook/template-manifest.json`
+(Adjust path if your extension is installed in a different location like `typo3conf/ext/`).
+
+### Output File Example (`template-manifest.json`)
+
+```json
+{
+  "templates": [
+    {
+      "path": "EXT:my_fluid_storybook/Resources/Private/Templates/SimpleStory.html",
+      "type": "Template",
+      "extension": "my_fluid_storybook",
+      "name": "SimpleStory"
+    },
+    // ... other templates
+  ],
+  "partials": [
+    {
+      "path": "EXT:my_fluid_storybook/Resources/Private/Partials/SimpleInfoPartial.html",
+      "type": "Partial",
+      "extension": "my_fluid_storybook",
+      "name": "SimpleInfoPartial"
+    }
+    // ... other partials
+  ],
+  "layouts": [
+    {
+      "path": "EXT:my_fluid_storybook/Resources/Private/Layouts/SimpleLayout.html",
+      "type": "Layout",
+      "extension": "my_fluid_storybook",
+      "name": "SimpleLayout"
+    }
+    // ... other layouts
+  ]
+}
+```
+*(The content of the JSON above is illustrative and will reflect the actual files found in the `my_fluid_storybook` extension when the command is run.)*
+
+This command currently only scans the `my_fluid_storybook` extension itself. Future enhancements may allow scanning of other extensions.
+
 ## Troubleshooting Common Errors
 
 Refer to the "Understanding Error Objects" section for details on `type`, `status`, and `details` fields mentioned below.
