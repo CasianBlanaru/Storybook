@@ -1,0 +1,55 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main, master ] # Adjust if your main branch has a different name
+  pull_request:
+    branches: [ main, master ] # Adjust if your main branch has a different name
+
+jobs:
+  php-lint:
+    name: PHP Syntax Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1' # TYPO3 v12 generally requires PHP 8.1+
+          extensions: mbstring, intl, json, gd, xml, zip # Common extensions, adjust if needed
+          tools: composer # If composer validation or scripts were needed later
+
+      - name: Validate PHP syntax (linting)
+        run: |
+          find . -name "*.php" \
+            -not -path "./.git/*" \
+            -not -path "./vendor/*" \
+            -not -path "./Resources/Public/Storybook/node_modules/*" \
+            -not -path "./Resources/Public/Storybook/storybook-static/*" \
+            -exec php -l {} \;
+          # The find command will exit with non-zero if php -l finds an error in any file.
+
+  storybook-tests:
+    name: Storybook (Jest) Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./Resources/Public/Storybook # Set default working dir for steps in this job
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # Or '20', ensure it matches your dev environment
+          cache: 'npm'
+          cache-dependency-path: Resources/Public/Storybook/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Jest tests
+        run: npm test
