@@ -1,0 +1,47 @@
+<div class="my-themed-component" style="padding: 20px; border-radius: 5px;">
+    <h2>{headline}</h2>
+    <p>This is a themable component. Its background, text color, and border are controlled by CSS variables set by the selected theme (e.g., via <code>data-theme</code> attribute on a parent or root element).</p>
+    <p>Current theme should influence styles defined in your global CSS.</p>
+    <button class="themed-button">Themed Button</button>
+</div>
+
+<!--
+Example CSS that should be loaded by your TYPO3 site/extension:
+<style>
+:root {
+  --component-background: #f0f0f0;
+  --component-text-color: #333;
+  --component-border-color: #ccc;
+  --button-background: #007bff;
+  --button-text-color: #fff;
+}
+
+[data-theme="dark"] {
+  --component-background: #222;
+  --component-text-color: #eee;
+  --component-border-color: #555;
+  --button-background: #0056b3;
+  --button-text-color: #fff;
+}
+
+.my-themed-component {
+  background-color: var(--component-background);
+  color: var(--component-text-color);
+  border: 1px solid var(--component-border-color);
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.themed-button {
+  background-color: var(--button-background);
+  color: var(--button-text-color);
+  border: 1px solid var(--button-background);
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+.themed-button:hover {
+  opacity: 0.8;
+}
+</style>
+-->

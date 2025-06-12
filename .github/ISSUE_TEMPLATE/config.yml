@@ -1,0 +1,8 @@
+blank_issues_enabled: true # Set to false to strictly enforce template usage
+contact_links:
+  - name: TYPO3 Slack Channel (e.g., #extdev)
+    url: https://typo3.slack.com/ # Replace with a more specific channel if one exists for the project
+    about: Please ask and answer questions here for general help.
+#  - name: Security Contact
+#    url: mailto:security@example.com # Replace with a security contact if applicable
+#    about: Please report security vulnerabilities here.
