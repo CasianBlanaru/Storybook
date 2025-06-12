@@ -1,16 +1,12 @@
-// Example for .storybook/preview.js
-// This ensures that our FluidTemplate.js is loaded before stories try to use it.
-// This is one way to make it available. Another is to import it in each story or a helper.
-// By adding it to staticDirs and then here, we ensure it's loaded.
-// Note: This makes FluidTemplate a global.
-// Alternatively, stories could import it if FluidTemplate.js is structured as an ES module
-// and the Storybook setup correctly resolves it.
-// For simplicity of this step, we'll assume FluidTemplate.js is loaded globally.
+// Resources/Public/Storybook/.storybook/preview.js
+import { FluidTemplate } from '../../JavaScript/FluidTemplate.ts'; // Adjust path as needed
 
-// It's better to create a preview-head.html to load the script
-// to avoid issues with HMR and ensure it's loaded early.
-// So, this file might just contain parameter type definitions or global decorators in the future.
-// For now, it can be minimal.
+// Make FluidTemplate available globally for convenience in stories
+// @ts-ignore
+window.FluidTemplate = FluidTemplate;
+// Note: Using window global is convenient but not always best practice.
+// Stories could also import FluidTemplate directly:
+// import { FluidTemplate } from '../../JavaScript/FluidTemplate';
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },

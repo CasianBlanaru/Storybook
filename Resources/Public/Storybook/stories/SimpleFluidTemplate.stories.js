@@ -1,4 +1,9 @@
 // Resources/Public/Storybook/stories/SimpleFluidTemplate.stories.js
+
+// For new stories, consider importing directly:
+// import { FluidTemplate } from '../../JavaScript/FluidTemplate';
+// Then call FluidTemplate directly instead of window.FluidTemplate
+
 export default {
   title: 'TYPO3 Fluid/Simple Template',
   argTypes: {
@@ -10,18 +15,21 @@ export default {
 
 const Template = ({ templatePath, headline, content, ...args }) => {
   const container = document.createElement('div');
-  // Assumes FluidTemplate is globally available via preview-head.html
-  if (typeof FluidTemplate !== 'function') {
-    container.innerHTML = 'Error: FluidTemplate function is not loaded. Check .storybook/preview-head.html and staticDirs in main.js';
+
+  // Assuming FluidTemplate is globally available via preview.js (window.FluidTemplate)
+  // @ts-ignore (if in a TS context and window.FluidTemplate isn't fully typed on window)
+  const ft = window.FluidTemplate || FluidTemplate; // Fallback if somehow not on window but imported
+
+  if (typeof ft !== 'function') {
+    container.innerHTML = 'Error: FluidTemplate function is not available. Check .storybook/preview.js';
     return container;
   }
 
-  FluidTemplate({ templatePath, variables: { headline, content } })
+  ft({ templatePath, variables: { headline, content } }) // Use 'ft'
     .then(html => {
       container.innerHTML = html;
     })
-    .catch(error => {
-      // Handle structured error object
+    .catch(error => { // error will implicitly be FluidTemplateError | string (or any)
       let errorMessage = 'An unexpected error occurred.';
       if (typeof error === 'string') {
         errorMessage = error;
@@ -39,7 +47,7 @@ const Template = ({ templatePath, headline, content, ...args }) => {
       }
       container.innerHTML = `<div style="color: red; border: 1px solid red; padding: 10px; font-family: monospace;">${errorMessage}</div>`;
     });
-  return container; // Storybook will render this div, which gets updated asynchronously
+  return container;
 };
 
 export const Default = Template.bind({});

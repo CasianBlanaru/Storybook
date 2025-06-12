@@ -12,6 +12,7 @@
     "@storybook/html-webpack5": "^8.0.0",
     "@storybook/blocks": "^8.0.0",
     "storybook": "^8.0.0",
-    "prop-types": "^15.8.1"
+    "prop-types": "^15.8.1",
+    "typescript": "^5.0.0"
   }
 }

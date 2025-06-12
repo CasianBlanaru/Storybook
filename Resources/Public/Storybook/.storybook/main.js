@@ -13,6 +13,5 @@ module.exports = {
   docs: {
     autodocs: 'tag',
   },
-  // Ensure static directories are served if FluidTemplate.js is outside Storybook's direct bundling
-  staticDirs: ['../../JavaScript'], // This makes FluidTemplate.js available at /FluidTemplate.js
+  // staticDirs: ['../../JavaScript'], // REMOVE THIS LINE or comment out
 };

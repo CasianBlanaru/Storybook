@@ -1,0 +1,25 @@
+<div style="border: 2px solid green; padding: 15px;">
+    <h2>{mainHeadline}</h2>
+
+    <f:if condition="{showExtraInfo}">
+        <p style="background-color: #f0f0f0; padding: 8px;">
+            Extra Information is visible! Some text: {extraInfoText}
+        </p>
+    </f:if>
+
+    <f:if condition="{items}">
+        <h3>Items List:</h3>
+        <ul>
+            <f:for each="{items}" as="item" iteration="itemIterator">
+                <li>
+                    {item.name} (ID: {item.id})
+                    <f:render partial="SimpleInfoPartial" arguments="{info: item.description, iteration: itemIterator}" />
+                </li>
+            </f:for>
+        </ul>
+    </f:if>
+
+    <f:if condition="!{items}">
+        <p>No items provided.</p>
+    </f:if>
+</div>
