@@ -1,28 +1,68 @@
 // Resources/Public/JavaScript/FluidTemplate.ts
 
+/**
+ * Represents a structured error object returned by FluidTemplate on failure.
+ */
 export interface FluidTemplateError {
+  /** A human-readable summary of the error. */
   message: string;
+  /** Categorizes the error (e.g., ConfigurationError, APIError, NetworkError). */
   type: "ConfigurationError" | "APIError" | "NetworkError";
-  status?: number; // HTTP status code, optional
-  details?: string; // Detailed error information, optional
+  /** The HTTP status code returned by the API, if applicable. */
+  status?: number;
+  /** More specific information or details about the error. */
+  details?: string;
 }
 
+/**
+ * Defines the options for the {@link FluidTemplate} function.
+ */
 export interface FluidTemplateOptions {
+  /**
+   * The path to the Fluid template to render. Must use the `EXT:` convention.
+   * @example "EXT:my_extension/Resources/Private/Templates/MyComponent.html"
+   */
   templatePath: string;
-  variables?: Record<string, any>; // Allows any structure for variables
+  /**
+   * An object of variables to pass to the Fluid template.
+   * These variables will be available in the Fluid template's context.
+   * @default {}
+   * @example { headline: "Hello", items: [{id:1, name:"A"}] }
+   */
+  variables?: Record<string, any>;
+  /**
+   * The API endpoint URL that handles Fluid template rendering.
+   * @default "/api/fluid/render"
+   */
   apiEndpoint?: string;
 }
 
 /**
  * Fetches and renders a Fluid template from a TYPO3 API endpoint.
  *
- * @param {FluidTemplateOptions} options - The options for rendering the template.
- * @returns {Promise<string>} A promise that resolves with the rendered HTML string or rejects with a structured error object.
+ * This function communicates with a TYPO3 backend to render a specified Fluid template,
+ * passing variables and returning the rendered HTML. It's designed for use in
+ * Storybook to preview TYPO3 Fluid components.
+ *
+ * @async
+ * @param {FluidTemplateOptions} options - The options for rendering the template, including `templatePath`, `variables`, and `apiEndpoint`.
+ * @returns {Promise<string>} A promise that resolves with the rendered HTML string.
+ * @throws {FluidTemplateError} Rejects with a structured error object if rendering fails or parameters are invalid.
+ *
+ * @example
+ * ```typescript
+ * FluidTemplate({
+ *   templatePath: "EXT:my_ext/Resources/Private/Templates/MyComponent.html",
+ *   variables: { title: "My Component" }
+ * })
+ * .then(html => console.log(html))
+ * .catch(error => console.error(error.message, error.details));
+ * ```
  */
 export async function FluidTemplate({
   templatePath,
   variables = {},
-  apiEndpoint = '/api/fluid/render' // Default API endpoint
+  apiEndpoint = '/api/fluid/render'
 }: FluidTemplateOptions): Promise<string> {
   if (!templatePath) {
     const error: FluidTemplateError = {
@@ -40,7 +80,7 @@ export async function FluidTemplate({
     params.append('variables', JSON.stringify(variables));
 
     const fetchUrl = `${apiEndpoint}?${params.toString()}`;
-    // console.log(`FluidTemplate: Fetching from ${fetchUrl}`); // Optional: for debugging
+    // console.log(`FluidTemplate: Fetching from ${fetchUrl}`);
 
     const response = await fetch(fetchUrl, {
       method: 'GET',
@@ -85,13 +125,12 @@ export async function FluidTemplate({
     }
 
     const renderedHtml = await response.text();
-    // Optional: Warn if response is OK but content is empty and seems like JSON
     if (renderedHtml.trim() === '' && response.headers.get('Content-Type')?.includes('application/json')) {
          console.warn(`FluidTemplate: Received empty response for template '${templatePath}', but status was OK. Check API and template.`);
     }
     return renderedHtml;
 
-  } catch (networkError: any) { // Catch as 'any' for broader compatibility with error types
+  } catch (networkError: any) {
     const error: FluidTemplateError = {
       message: `FluidTemplate Error: Network error while trying to fetch template '${templatePath}'.`,
       type: "NetworkError",

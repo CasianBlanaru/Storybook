@@ -4,7 +4,8 @@ module.exports = {
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-essentials',
-    // '@storybook/addon-interactions', // Optional: if we want interaction testing
+       // '@storybook/addon-interactions',
+       '@storybook/addon-a11y', // Add this line
   ],
   framework: {
     name: '@storybook/html-webpack5', // Or appropriate for plain JS/HTML

@@ -1,5 +1,8 @@
 <div style="border: 2px solid green; padding: 15px;">
     <h2>{mainHeadline}</h2>
+       <f:if condition="{status}">
+           <p><strong>Status: <span style="color: blue;">{status}</span></strong></p>
+       </f:if>
 
     <f:if condition="{showExtraInfo}">
         <p style="background-color: #f0f0f0; padding: 8px;">
