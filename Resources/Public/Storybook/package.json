@@ -5,7 +5,13 @@
   "scripts": {
     "storybook": "storybook dev -p 6006",
        "build-storybook": "storybook build",
-       "test": "jest"
+       "test": "jest",
+       "storybook:build-static": "storybook build -o storybook-static-dist",
+       "serve-static": "http-server ./storybook-static-dist -p 6007 --silent",
+       "cy:open": "cypress open",
+       "cy:run": "cypress run",
+       "test:e2e:dev": "start-server-and-test storybook http://localhost:6006 cy:open",
+       "test:e2e:ci": "start-server-and-test serve-static http://localhost:6007 cy:run"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "^8.0.0",
@@ -19,6 +25,9 @@
        "ts-jest": "^29.0.0",
        "@types/jest": "^29.0.0",
        "jest-environment-jsdom": "^29.0.0",
-       "@storybook/addon-a11y": "^8.0.0"
+       "@storybook/addon-a11y": "^8.0.0",
+       "cypress": "^13.0.0",
+       "start-server-and-test": "^2.0.0",
+       "http-server": "^14.0.0"
   }
 }

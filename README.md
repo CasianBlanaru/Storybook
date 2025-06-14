@@ -377,20 +377,22 @@ The above description reflects the enhanced command. The previous example output
 
 A story named "Manifest Driven Story" (`Resources/Public/Storybook/stories/ManifestDrivenStory.stories.js`) demonstrates how to use this generated manifest.
 - It attempts to fetch `template-manifest.json` when Storybook loads.
-- It then populates a `select` dropdown in its "Controls" panel with the template paths found in the "templates" array of the manifest.
+- Its "Select Template" control is populated with template paths from the manifest.
 - This allows you to choose a template from the dropdown and see it rendered.
 - **Note:** For the dropdown to be populated correctly, you must run the `storybook:generate-manifest` CLI command first. If the manifest is generated or updated after Storybook has already started and loaded the story, you might need to refresh your browser for the dropdown options to update.
 - The story provides a generic `variables` JSON input, as it cannot know the specific variables required by each template in the manifest. You'll need to adjust the `variables` input based on the selected template's needs.
 
 ### Template Manifest Panel (Experimental)
 
-A new panel labeled "Fluid Templates" is available in the Storybook addons area (usually at the bottom).
-This panel attempts to load and display the contents of `template-manifest.json`.
-- It lists discovered Templates, Partials, and Layouts.
-- For "Templates", a button is available to select it (currently logs to console; full story integration is planned).
-- If the manifest is not found or fails to load, an error message will guide you to run the TYPO3 CLI command `storybook:generate-manifest`.
+A panel labeled "Fluid Templates" is available in the Storybook addons area (usually at the bottom). This panel displays the contents of `template-manifest.json`.
+- It lists discovered Templates, Partials, and Layouts from all scanned extensions.
+- For "Templates", a "Select Template" button is available. Clicking this button will:
+    1. Update a hidden global Storybook argument (`panelSelectedTemplatePath`) with the chosen template's path.
+    2. Log this action to the console.
+    3. The "Manifest Driven Story" (if currently viewed or navigated to) will detect this global argument change and render the selected template.
+- If the manifest is not found or fails to load, an error message in the panel will guide you to run the TYPO3 CLI command `storybook:generate-manifest`.
 
-This panel is experimental and aims to provide an easier way to browse available Fluid resources.
+This panel provides an interactive way to browse available Fluid resources and directly influence the "Manifest Driven Story".
 
 ## Troubleshooting Common Errors
 
