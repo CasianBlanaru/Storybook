@@ -1,0 +1,17 @@
+<f:layout name="SimpleLayout" />
+
+<f:section name="MainContent">
+    <h2>{pageHeadline}</h2>
+    <p>This is the main content of the page, rendered within the "SimpleLayout".</p>
+    <p>An inline Fluid expression: {myTextValue -> f:format.case(mode: 'upper')}</p>
+    <p>Count of items in array: {myArray -> f:count()}</p>
+
+    <f:if condition="{myArray}">
+        <p>Items list (rendered using a partial within a layout-driven template):</p>
+        <ul>
+            <f:for each="{myArray}" as="item" iteration="loopIterator">
+                <li><f:render partial="SimpleInfoPartial" arguments="{info: item.name, iteration: loopIterator}" /></li>
+            </f:for>
+        </ul>
+    </f:if>
+</f:section>
