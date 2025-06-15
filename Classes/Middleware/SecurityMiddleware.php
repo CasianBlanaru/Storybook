@@ -8,6 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
+use Vendor\FluidStorybook\Configuration\ExtensionConfiguration;
 
 /**
  * Security middleware for Fluid Storybook API endpoints.
@@ -15,10 +16,18 @@ use TYPO3\CMS\Core\Http\JsonResponse;
  */
 class SecurityMiddleware implements MiddlewareInterface
 {
-    private const RATE_LIMIT_REQUESTS = 100;
-    private const RATE_LIMIT_WINDOW = 3600; // 1 hour
-    
     private static array $requestCounts = [];
+    
+    private int $rateLimitRequests;
+    private int $rateLimitWindow;
+    private array $allowedOrigins;
+    
+    public function __construct()
+    {
+        $this->rateLimitRequests = (int)ExtensionConfiguration::get('rate_limit_max_requests');
+        $this->rateLimitWindow = (int)ExtensionConfiguration::get('rate_limit_window_minutes') * 60; // Convert to seconds
+        $this->allowedOrigins = ExtensionConfiguration::getCorsAllowedOrigins();
+    }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -48,7 +57,7 @@ class SecurityMiddleware implements MiddlewareInterface
     {
         $clientIp = $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown';
         $now = time();
-        $windowStart = $now - self::RATE_LIMIT_WINDOW;
+        $windowStart = $now - $this->rateLimitWindow;
 
         // Clean old entries
         self::$requestCounts[$clientIp] = array_filter(
@@ -57,7 +66,7 @@ class SecurityMiddleware implements MiddlewareInterface
         );
 
         // Check current count
-        if (count(self::$requestCounts[$clientIp] ?? []) >= self::RATE_LIMIT_REQUESTS) {
+        if (count(self::$requestCounts[$clientIp] ?? []) >= $this->rateLimitRequests) {
             return false;
         }
 
@@ -75,12 +84,12 @@ class SecurityMiddleware implements MiddlewareInterface
             return $origin;
         }
         
-        // Add your production domains here
-        $allowedOrigins = [
-            'https://your-storybook-domain.com',
-            // Add more as needed
-        ];
+        // Allow .ddev.site domains for DDEV development
+        if (str_contains($origin, '.ddev.site')) {
+            return $origin;
+        }
         
-        return in_array($origin, $allowedOrigins) ? $origin : '';
+        // Check configured allowed origins
+        return in_array($origin, $this->allowedOrigins) ? $origin : '';
     }
 } 
