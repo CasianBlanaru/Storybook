@@ -81,17 +81,18 @@ Assuming a manifest (either from API or static file) is available:
 
 A combination might be best:
 
-1.  **Develop a TYPO3 Service/Utility** responsible for scanning and listing templates. This core logic can be reused.
-2.  **Implement a CLI Command** (`storybook:generate-template-manifest`) that uses this service to generate a `template-manifest.json` within the `my_fluid_storybook` extension's `Resources/Public/Storybook/` directory. This is the primary recommended way for production/CI.
-3.  **Optionally, provide an API Endpoint** (`/api/fluid/list-templates`) that uses the same service, primarily for dynamic discovery during local development if explicitly enabled. This endpoint should have clear security warnings and possibly be disabled by default.
-4.  Storybook then primarily relies on the `template-manifest.json`.
+1.  **Develop a TYPO3 Service/Utility** responsible for scanning and listing templates. This core logic can be reused. *(Partially addressed by the logic within the current CLI command, but could be further modularized).*
+2.  **Implement a CLI Command** (`storybook:generate-template-manifest`) that uses this service to generate a `template-manifest.json` within the `my_fluid_storybook` extension's `Resources/Public/Storybook/` directory. This is the primary recommended way for production/CI. *(A basic version of this CLI command has been implemented. It can scan specified extensions or all active non-system extensions.)*
+3.  **Optionally, provide an API Endpoint** (`/api/fluid/list-templates`) that uses the same service, primarily for dynamic discovery during local development if explicitly enabled. This endpoint should have clear security warnings and possibly be disabled by default. *(Not yet implemented).*
+4.  Storybook then primarily relies on the `template-manifest.json`. *(Basic consumption of the manifest is implemented in `preview.js` for global availability, by the "Manifest Driven Story", and by the experimental "Fluid Templates" panel).*
 
 This approach balances performance, security, and developer convenience. The manifest generation can be part of a build process or run manually when needed.
 
 ## Next Steps (for future implementation)
 
--   Design the exact structure of the `template-manifest.json`.
--   Implement the TYPO3 service for template scanning.
--   Implement the CLI command.
--   Develop Storybook components/addons to consume the manifest.
+-   Refine the structure of `template-manifest.json` if needed.
+-   Further enhance the TYPO3 service/utility for template scanning (e.g., more robust path resolution, override handling, advanced filtering).
+-   Implement the optional dynamic API endpoint (`/api/fluid/list-templates`) if deemed valuable.
+-   Further develop Storybook components/addons to consume the manifest for a richer UI experience (e.g., more dynamic global template selector, direct story generation from manifest).
+-   Improve error handling and user feedback for manifest generation and consumption.
 ```

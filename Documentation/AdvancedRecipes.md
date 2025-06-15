@@ -208,7 +208,10 @@ Capture DOM events from your rendered Fluid template and log them in the Storybo
 Quickly preview any template listed in your `template-manifest.json`.
 
 **Prerequisites:**
-- You have run `./vendor/bin/typo3 storybook:generate-manifest` in your TYPO3 project.
+   - You have run the CLI command in your TYPO3 project:
+     ```bash
+     ./vendor/bin/typo3 storybook:generate-manifest
+     ```
 - Storybook has been restarted or refreshed since the manifest was generated/updated.
 
 **Steps:**
@@ -219,7 +222,7 @@ Quickly preview any template listed in your `template-manifest.json`.
 4.  **Observe**: The story will attempt to render the chosen template with the variables you provided.
 
 **Tips:**
-- If the template list is empty or outdated, re-run the CLI command and refresh Storybook.
+   - If the template list is empty or outdated, re-run the CLI command as shown above and refresh Storybook.
 - The `variables` control is generic. You'll need to know what variables your selected template expects.
 
 ---

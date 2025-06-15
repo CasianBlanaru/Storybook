@@ -8,39 +8,68 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Package\PackageInterface;
 use TYPO3\CMS\Core\Package\PackageManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 
+/**
+ * Symfony Command to generate a JSON manifest of Fluid templates, partials, and layouts.
+ *
+ * The command can scan specified TYPO3 extensions or, by default, all active
+ * non-system extensions. The manifest is saved within this extension's
+ * Resources/Public/Storybook/ directory and is intended for use by Storybook UI components.
+ */
 class GenerateStorybookManifestCommand extends Command
 {
+    /**
+     * @var string Name of the command argument for specifying extension keys.
+     */
     private const OPTION_EXTENSION_KEYS = 'extension-keys';
-    private const SELF_EXTENSION_KEY = 'my_fluid_storybook'; // Key of this extension
 
-    // System/core extensions to exclude from 'scan all' mode
+    /**
+     * @var string Extension key of this extension, used to locate where to save the manifest.
+     */
+    private const SELF_EXTENSION_KEY = 'my_fluid_storybook';
+
+    /**
+     * @var list<string> Prefixes of system/core TYPO3 extensions to exclude from 'scan all' mode.
+     */
     private const SYSTEM_EXTENSION_PREFIXES = [
         'core', 'sys_', 'be_', 'fe_', 'extbase', 'fluid', 'install', 'recordlist',
         'info', 'scheduler', 'impexp', 'lowlevel', 'reports', 'setup', 'workspaces',
         'version', 'backend', 'frontend', 'documentation', 'tstemplate', 'filelist',
         'about', 'extensionmanager', 't3editor', 'adminpanel', 'belog', 'beuser',
         'felogin', 'form', 'linkvalidator', 'redirects', 'seo', 'sys_note',
-        'typo3db_legacy', 'viewpage', 'webpagetitle_tsफेvider', // common system/global extensions
-    ];
-    private const EXCLUDE_EXACT_KEYS = [ // Exact keys to exclude
-        self::SELF_EXTENSION_KEY, // Exclude this extension itself from "scan all"
-        'typo3_console', // The console itself
-        // Add other specific keys if needed
+        'typo3db_legacy', 'viewpage', // 'webpagetitle_provider' had a typo, assuming it's not a standard prefix
     ];
 
+    /**
+     * @var list<string> Exact extension keys to always exclude from 'scan all' mode.
+     */
+    private const EXCLUDE_EXACT_KEYS = [
+        self::SELF_EXTENSION_KEY, // Exclude this extension itself from "scan all" by default
+        'typo3_console',      // The console extension itself
+        // Add other specific keys if needed, e.g., 'gridelements', 'container'
+    ];
 
-    public function __construct(
-        private readonly PackageManager $packageManager
-    ) {
+    /**
+     * @var PackageManager Used to interact with TYPO3's package system.
+     */
+    private readonly PackageManager $packageManager;
+
+    /**
+     * Constructor. Injects PackageManager.
+     * @param PackageManager $packageManager
+     */
+    public function __construct(PackageManager $packageManager)
+    {
         parent::__construct();
+        $this->packageManager = $packageManager;
     }
 
+    /**
+     * Configures the command, setting help text and arguments.
+     */
     protected function configure(): void
     {
         $this->setHelp(
@@ -55,18 +84,26 @@ class GenerateStorybookManifestCommand extends Command
         );
     }
 
+    /**
+     * Executes the command to generate the template manifest.
+     *
+     * @param InputInterface $input Command input.
+     * @param OutputInterface $output Command output.
+     * @return int Command exit code (SUCCESS or FAILURE).
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
         $io->title('Generating Storybook Fluid Template Manifest');
 
-        $extensionKeysToScan = $input->getArgument(self::OPTION_EXTENSION_KEYS);
+        /** @var list<string> $extensionKeysToScan */
+        $extensionKeysToScan = $input->getArgument(self::OPTION_EXTENSION_KEYS) ?: [];
         $specificExtensionsProvided = !empty($extensionKeysToScan);
 
         if (!$specificExtensionsProvided) {
             $io->writeln('No specific extension keys provided. Scanning all active non-system extensions...');
             $allActivePackages = $this->packageManager->getActivePackages();
-            $extensionKeysToScan = [];
+            $extensionKeysToScan = []; // Reset to populate with filtered list
             foreach ($allActivePackages as $package) {
                 $extKey = $package->getPackageKey();
                 if ($this->shouldScanExtension($extKey)) {
@@ -77,7 +114,6 @@ class GenerateStorybookManifestCommand extends Command
             }
             if (empty($extensionKeysToScan)) {
                 $io->warning('No suitable extensions found to scan in "scan all" mode.');
-                // Still proceed to write an empty manifest
             }
         } else {
             $io->writeln('Scanning specified extensions: ' . implode(', ', $extensionKeysToScan));
@@ -111,12 +147,17 @@ class GenerateStorybookManifestCommand extends Command
                     continue;
                 }
 
-                $files = GeneralUtility::getFilesInDir($fullDirectoryPath, 'html', true);
+                $files = GeneralUtility::getFilesInDir($fullDirectoryPath, 'html', true); // Get .html files, full path
 
                 foreach ($files as $filePath) {
                     $fileName = basename($filePath);
                     $fileNameWithoutExtension = pathinfo($fileName, PATHINFO_FILENAME);
-                    // Ensure relative path within Resources/Private/... is used for EXT: path
+
+                    if (empty($fileNameWithoutExtension)) {
+                        $io->writeln(sprintf('Skipping file with empty base name: %s', $filePath), OutputInterface::VERBOSITY_VERBOSE);
+                        continue; // Skip this file
+                    }
+
                     $extSpecificPath = $relativePath . $fileName;
                     $extPath = 'EXT:' . $extKey . '/' . $extSpecificPath;
 
@@ -131,7 +172,6 @@ class GenerateStorybookManifestCommand extends Command
             }
         }
 
-        // Determine path to THIS extension (my_fluid_storybook) to save the manifest
         $thisExtensionPackage = $this->packageManager->getPackage(self::SELF_EXTENSION_KEY);
         if (!$thisExtensionPackage) {
              $io->error('Could not locate the main "' . self::SELF_EXTENSION_KEY . '" package to save the manifest. This should not happen.');
@@ -146,6 +186,11 @@ class GenerateStorybookManifestCommand extends Command
         }
 
         $jsonContent = json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        if ($jsonContent === false) {
+            $io->error('Failed to encode manifest data to JSON. Error: ' . json_last_error_msg());
+            return Command::FAILURE;
+        }
+
         if (GeneralUtility::writeFile($manifestPath, $jsonContent)) {
             $io->success('Successfully generated template manifest: ' . $manifestPath);
             $io->writeln(sprintf('Found %d templates, %d partials, %d layouts.', count($manifest['templates']), count($manifest['partials']), count($manifest['layouts'])));
@@ -156,6 +201,13 @@ class GenerateStorybookManifestCommand extends Command
         }
     }
 
+    /**
+     * Determines if a given extension key should be scanned in "scan all" mode.
+     * Excludes system extensions and explicitly defined keys.
+     *
+     * @param string $extKey The extension key to check.
+     * @return bool True if the extension should be scanned, false otherwise.
+     */
     private function shouldScanExtension(string $extKey): bool
     {
         if (in_array($extKey, self::EXCLUDE_EXACT_KEYS, true)) {

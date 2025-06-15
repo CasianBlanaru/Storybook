@@ -323,9 +323,9 @@ You can generate or update the manifest by running the command from your TYPO3 p
 ./vendor/bin/typo3 storybook:generate-manifest my_sitepackage another_custom_ext
 ```
 
-The command will output the path to the generated `template-manifest.json` file, which is always saved to:
-`packages/my_fluid_storybook/Resources/Public/Storybook/template-manifest.json`
-(Adjust path if your `my_fluid_storybook` extension is installed in a different location).
+The command will output the absolute path to the generated `template-manifest.json` file. This file is always saved inside the `my_fluid_storybook` extension's directory at the following relative path:
+`Resources/Public/Storybook/template-manifest.json`
+So, if your `my_fluid_storybook` extension is in `packages/my_fluid_storybook`, the full path would be `packages/my_fluid_storybook/Resources/Public/Storybook/template-manifest.json`.
 
 ### Command Behavior
 
