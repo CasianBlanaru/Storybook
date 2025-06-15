@@ -1,6 +1,9 @@
 // Resources/Public/JavaScript/__tests__/FluidTemplate.test.ts
 import { FluidTemplate, FluidTemplateError, FluidTemplateOptions } from '../FluidTemplate';
 
+// TypeScript global declarations
+declare const global: any;
+
 // Mock global fetch
 global.fetch = jest.fn();
 // Mock console.warn for one test
@@ -131,7 +134,10 @@ describe('FluidTemplate', () => {
       expect(variablesMatch).toBeTruthy();
       if (variablesMatch) {
         const decodedVariables = decodeURIComponent(variablesMatch[1]);
-        expect(JSON.parse(decodedVariables)).toEqual(options.variables);
+        const parsedVariables = JSON.parse(decodedVariables);
+        // Handle URL encoding differences: spaces can be encoded as + or %20
+        const normalizedParsed = JSON.parse(JSON.stringify(parsedVariables).replace(/\+/g, ' '));
+        expect(normalizedParsed).toEqual(options.variables);
       }
   });
 
