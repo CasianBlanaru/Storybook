@@ -27,14 +27,14 @@ This integration is in its early stages of development (Alpha). Core functionali
 
 ### 1. Install the TYPO3 Extension
 
-1.  **Download/Clone:** Place this extension (`my_fluid_storybook`) into your TYPO3 project's `packages/` directory (or `typo3conf/ext/` for older non-composer setups, though composer is highly recommended).
+1.  **Download/Clone:** Place this extension (`fluid_storybook`) into your TYPO3 project's `packages/` directory (or `typo3conf/ext/` for older non-composer setups, though composer is highly recommended).
     ```bash
     # Example for composer-based TYPO3 projects
     cd /path/to/your/typo3project/
     # Assuming you have the extension source code available:
-    cp -r /path/to/my_fluid_storybook packages/
+    cp -r /path/to/fluid_storybook packages/
     ```
-2.  **Activate:** In the TYPO3 backend, go to "Admin Tools" > "Extensions" and activate the "Fluid Storybook Integration" extension (key: `my_fluid_storybook`).
+2.  **Activate:** In the TYPO3 backend, go to "Admin Tools" > "Extensions" and activate the "Fluid Storybook Integration" extension (key: `fluid_storybook`).
     *This step ensures the API endpoint is registered.*
 
 ### 2. Set Up and Run Storybook
@@ -43,7 +43,7 @@ The Storybook setup is located within the extension at `Resources/Public/Storybo
 
 1.  **Navigate to the Storybook directory:**
     ```bash
-    cd /path/to/your/typo3project/packages/my_fluid_storybook/Resources/Public/Storybook/
+    cd /path/to/your/typo3project/packages/fluid_storybook/Resources/Public/Storybook/
     ```
 2.  **Install Node.js dependencies:**
     ```bash
@@ -143,7 +143,7 @@ Here's how you might use it in a story file (e.g., `SimpleFluidTemplate.stories.
 
 Let's consider a Fluid template that uses conditions, loops, and renders a partial.
 
-**Fluid Template (`EXT:my_fluid_storybook/Resources/Private/Templates/ComplexStory.html`):**
+**Fluid Template (`EXT:fluid_storybook/Resources/Private/Templates/ComplexStory.html`):**
 
 ```html
 <div style="border: 2px solid green; padding: 15px;">
@@ -173,7 +173,7 @@ Let's consider a Fluid template that uses conditions, loops, and renders a parti
 </div>
 ```
 
-**Fluid Partial (`EXT:my_fluid_storybook/Resources/Private/Partials/SimpleInfoPartial.html`):**
+**Fluid Partial (`EXT:fluid_storybook/Resources/Private/Partials/SimpleInfoPartial.html`):**
 
 ```html
 <div style="border: 1px dashed blue; padding: 10px; margin-top: 5px;">
@@ -224,7 +224,7 @@ const Template = (args) => {
 
 export const DefaultView = Template.bind({});
 DefaultView.args = {
-  templatePath: 'EXT:my_fluid_storybook/Resources/Private/Templates/ComplexStory.html',
+  templatePath: 'EXT:fluid_storybook/Resources/Private/Templates/ComplexStory.html',
   mainHeadline: 'Complex Template Demo',
   showExtraInfo: true,
   extraInfoText: 'This information is shown based on a condition.',
@@ -237,7 +237,7 @@ DefaultView.args = {
 
 export const NoItemsAndNoExtraInfo = Template.bind({});
 NoItemsAndNoExtraInfo.args = {
-  templatePath: 'EXT:my_fluid_storybook/Resources/Private/Templates/ComplexStory.html',
+  templatePath: 'EXT:fluid_storybook/Resources/Private/Templates/ComplexStory.html',
   mainHeadline: 'Minimal View',
   showExtraInfo: false,
   extraInfoText: 'This should not be visible.',
@@ -281,14 +281,14 @@ export const ExampleComponent = Template.bind({});
 ExampleComponent.args = {
   headline: 'Dynamic Headline from Storybook',
   content: 'This is some dynamic content passed as a variable.',
-  templatePath: 'EXT:my_fluid_storybook/Resources/Private/Templates/SimpleStory.html', // Example path
+  templatePath: 'EXT:fluid_storybook/Resources/Private/Templates/SimpleStory.html', // Example path
 };
 ```
 
 ### Example Fluid Template (`SimpleStory.html`)
 
 ```html
-<!-- EXT:my_fluid_storybook/Resources/Private/Templates/SimpleStory.html -->
+<!-- EXT:fluid_storybook/Resources/Private/Templates/SimpleStory.html -->
 <div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
     <h1>{headline}</h1>
     <p>{content}</p>
@@ -298,7 +298,7 @@ ExampleComponent.args = {
 
 ## Template Manifest Generation (Experimental)
 
-This extension includes a CLI command to scan for Fluid templates, partials, and layouts within the `my_fluid_storybook` extension and generate a `template-manifest.json` file. This manifest is intended for future integration with Storybook to provide features like a template picker.
+This extension includes a CLI command to scan for Fluid templates, partials, and layouts within the `fluid_storybook` extension and generate a `template-manifest.json` file. This manifest is intended for future integration with Storybook to provide features like a template picker.
 
 ### Purpose
 
@@ -323,13 +323,13 @@ You can generate or update the manifest by running the command from your TYPO3 p
 ./vendor/bin/typo3 storybook:generate-manifest my_sitepackage another_custom_ext
 ```
 
-The command will output the absolute path to the generated `template-manifest.json` file. This file is always saved inside the `my_fluid_storybook` extension's directory at the following relative path:
+The command will output the absolute path to the generated `template-manifest.json` file. This file is always saved inside the `fluid_storybook` extension's directory at the following relative path:
 `Resources/Public/Storybook/template-manifest.json`
-So, if your `my_fluid_storybook` extension is in `packages/my_fluid_storybook`, the full path would be `packages/my_fluid_storybook/Resources/Public/Storybook/template-manifest.json`.
+So, if your `fluid_storybook` extension is in `packages/fluid_storybook`, the full path would be `packages/fluid_storybook/Resources/Public/Storybook/template-manifest.json`.
 
 ### Command Behavior
 
--   **Without arguments**: Scans all currently active TYPO3 extensions. It attempts to filter out common system and core extensions (e.g., `core`, `backend`, `fluid`, `extbase`, etc.) and the `my_fluid_storybook` extension itself. The goal is to discover templates in your site packages or custom component extensions.
+-   **Without arguments**: Scans all currently active TYPO3 extensions. It attempts to filter out common system and core extensions (e.g., `core`, `backend`, `fluid`, `extbase`, etc.) and the `fluid_storybook` extension itself. The goal is to discover templates in your site packages or custom component extensions.
 -   **With `extension-keys` argument(s)**: Scans only the specified extension(s). Multiple extension keys can be provided, separated by spaces.
     Example: `./vendor/bin/typo3 storybook:generate-manifest my_site_package my_components_ext`
 
@@ -341,36 +341,36 @@ The output `template-manifest.json` will aggregate findings from all successfull
 {
   "templates": [
     {
-      "path": "EXT:my_fluid_storybook/Resources/Private/Templates/SimpleStory.html",
+      "path": "EXT:fluid_storybook/Resources/Private/Templates/SimpleStory.html",
       "type": "Template",
-      "extension": "my_fluid_storybook",
+      "extension": "fluid_storybook",
       "name": "SimpleStory"
     },
     // ... other templates
   ],
   "partials": [
     {
-      "path": "EXT:my_fluid_storybook/Resources/Private/Partials/SimpleInfoPartial.html",
+      "path": "EXT:fluid_storybook/Resources/Private/Partials/SimpleInfoPartial.html",
       "type": "Partial",
-      "extension": "my_fluid_storybook",
+      "extension": "fluid_storybook",
       "name": "SimpleInfoPartial"
     }
     // ... other partials
   ],
   "layouts": [
     {
-      "path": "EXT:my_fluid_storybook/Resources/Private/Layouts/SimpleLayout.html",
+      "path": "EXT:fluid_storybook/Resources/Private/Layouts/SimpleLayout.html",
       "type": "Layout",
-      "extension": "my_fluid_storybook",
+      "extension": "fluid_storybook",
       "name": "SimpleLayout"
     }
     // ... other layouts
   ]
 }
 ```
-*(The content of the JSON above is illustrative and will reflect the actual files found in the `my_fluid_storybook` extension when the command is run.)*
+*(The content of the JSON above is illustrative and will reflect the actual files found in the `fluid_storybook` extension when the command is run.)*
 
-This command currently only scans the `my_fluid_storybook` extension itself. Future enhancements may allow scanning of other extensions.
+This command currently only scans the `fluid_storybook` extension itself. Future enhancements may allow scanning of other extensions.
 The above description reflects the enhanced command. The previous example output is illustrative of a single-extension scan. With multiple extensions, the list would contain entries from all of them.
 
 ### Using the Manifest in Stories (Example)
@@ -441,14 +441,14 @@ Refer to the "Understanding Error Objects" section for details on `type`, `statu
     -   **Possible Causes**:
         -   Your local TYPO3 development site is not running or is not accessible at the host/port Storybook is trying to reach.
         -   The API endpoint (`/api/fluid/render`) is not correctly registered:
-            -   The `my_fluid_storybook` extension might not be active in TYPO3.
+            -   The `fluid_storybook` extension might not be active in TYPO3.
             -   There might be an issue with TYPO3's routing configuration or URL rewriting.
         -   Cross-Origin Resource Sharing (CORS) issues if Storybook (e.g., `http://localhost:6006`) and TYPO3 (e.g., `http://localhost:80` or `http://my-project.ddev.site`) are on different origins.
         -   A firewall or browser extension (like an ad blocker or privacy tool) is blocking the request.
         -   DNS resolution problems if using a hostname for the API.
     -   **Solutions**:
         -   Ensure your TYPO3 local development site is running and accessible from your browser at the address configured or implied by `apiEndpoint`.
-        -   Verify the `my_fluid_storybook` extension is activated in TYPO3's Extension Manager.
+        -   Verify the `fluid_storybook` extension is activated in TYPO3's Extension Manager.
         -   Open your browser's developer tools (usually F12), go to the "Network" tab, and re-trigger the template rendering in Storybook. Inspect the failed request (often highlighted in red). Check its URL, headers, and any specific error code or message provided by the browser.
         -   If CORS is suspected (check the browser console for CORS-related errors), ensure your TYPO3 server sends appropriate `Access-Control-Allow-Origin` headers for the Storybook origin. For local development, allowing `http://localhost:6006` (or your Storybook port) might be necessary.
         -   Temporarily disable browser extensions that might interfere with network requests to rule them out.

@@ -1,6 +1,6 @@
 # Automated Documentation Deployment Strategy
 
-This document outlines a conceptual strategy for automatically building and deploying the project documentation for `my_fluid_storybook`. The documentation primarily consists of the main `README.md` and various Markdown files within the `Documentation/` directory.
+This document outlines a conceptual strategy for automatically building and deploying the project documentation for `fluid_storybook`. The documentation primarily consists of the main `README.md` and various Markdown files within the `Documentation/` directory.
 
 ## Goals
 

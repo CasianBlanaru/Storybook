@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace MyVendor\MyFluidStorybook\Command;
+namespace Vendor\FluidStorybook\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -29,7 +29,7 @@ class GenerateStorybookManifestCommand extends Command
     /**
      * @var string Extension key of this extension, used to locate where to save the manifest.
      */
-    private const SELF_EXTENSION_KEY = 'my_fluid_storybook';
+    private const SELF_EXTENSION_KEY = 'fluid_storybook';
 
     /**
      * @var list<string> Prefixes of system/core TYPO3 extensions to exclude from 'scan all' mode.

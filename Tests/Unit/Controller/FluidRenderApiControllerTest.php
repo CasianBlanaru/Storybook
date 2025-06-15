@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace MyVendor\MyFluidStorybook\Tests\Unit\Controller;
+namespace Vendor\FluidStorybook\Tests\Unit\Controller;
 
-use MyVendor\MyFluidStorybook\Controller\FluidRenderApiController;
+use Vendor\FluidStorybook\Controller\FluidRenderApiController;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\ServerRequest;

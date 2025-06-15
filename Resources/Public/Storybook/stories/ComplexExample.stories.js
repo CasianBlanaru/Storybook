@@ -68,7 +68,7 @@ export const DefaultView = Template.bind({});
  * - Status is set to 'processing'.
  */
 DefaultView.args = {
-  templatePath: 'EXT:my_fluid_storybook/Resources/Private/Templates/ComplexStory.html',
+  templatePath: 'EXT:fluid_storybook/Resources/Private/Templates/ComplexStory.html',
   mainHeadline: 'Complex Template Demo',
   showExtraInfo: true,
   extraInfoText: 'This information is shown based on a condition.',
@@ -88,7 +88,7 @@ export const NoItemsAndNoExtraInfo = Template.bind({});
  * - Status is 'new'.
  */
 NoItemsAndNoExtraInfo.args = {
-  templatePath: 'EXT:my_fluid_storybook/Resources/Private/Templates/ComplexStory.html',
+  templatePath: 'EXT:fluid_storybook/Resources/Private/Templates/ComplexStory.html',
   mainHeadline: 'Minimal View',
   showExtraInfo: false,
   extraInfoText: 'This should not be visible.',

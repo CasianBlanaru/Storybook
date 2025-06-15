@@ -9,7 +9,7 @@ export default {
   argTypes: {
     headline: { control: 'text' },
     content: { control: 'text' },
-    templatePath: { control: 'text', defaultValue: 'EXT:my_fluid_storybook/Resources/Private/Templates/SimpleStory.html' },
+    templatePath: { control: 'text', defaultValue: 'EXT:fluid_storybook/Resources/Private/Templates/SimpleStory.html' },
   },
 };
 
@@ -54,12 +54,12 @@ export const Default = Template.bind({});
 Default.args = {
   headline: 'Hello from Storybook!',
   content: 'This content is passed as a variable to the Fluid template.',
-  templatePath: 'EXT:my_fluid_storybook/Resources/Private/Templates/SimpleStory.html',
+  templatePath: 'EXT:fluid_storybook/Resources/Private/Templates/SimpleStory.html',
 };
 
 export const AnotherInstance = Template.bind({});
 AnotherInstance.args = {
   headline: 'Another Example',
   content: 'Different variables, same template structure.',
-  templatePath: 'EXT:my_fluid_storybook/Resources/Private/Templates/SimpleStory.html',
+  templatePath: 'EXT:fluid_storybook/Resources/Private/Templates/SimpleStory.html',
 };

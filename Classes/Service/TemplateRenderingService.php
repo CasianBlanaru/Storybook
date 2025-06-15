@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace MyVendor\MyFluidStorybook\Service;
+namespace Vendor\FluidStorybook\Service;
 
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Log\LogManager;

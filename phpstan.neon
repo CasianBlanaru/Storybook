@@ -3,7 +3,7 @@ parameters:
     paths:
         - Classes
     bootstrapFiles:
-        - .Build/vendor/autoload.php
+        - vendor/autoload.php
     excludePaths:
         - Tests/*
     ignoreErrors:

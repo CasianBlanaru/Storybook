@@ -1,11 +1,11 @@
 # Example TYPO3 Project for Fluid Storybook Integration
 
-This document outlines the conceptual setup for a public example repository that demonstrates how to use the `my_fluid_storybook` extension in a real TYPO3 environment.
+This document outlines the conceptual setup for a public example repository that demonstrates how to use the `fluid_storybook` extension in a real TYPO3 environment.
 
 ## Purpose
 
 The example repository aims to:
-- Provide a quick-start environment for users to see `my_fluid_storybook` in action.
+- Provide a quick-start environment for users to see `fluid_storybook` in action.
 - Showcase best practices for integrating Fluid templates with Storybook.
 - Offer concrete examples of Fluid templates and corresponding Storybook stories.
 - Reduce the barrier to entry for new users.
@@ -22,7 +22,7 @@ The example repository would be a self-contained TYPO3 project.
 
 ### 2. Included Extensions
 
--   **`my_fluid_storybook` (This Project)**:
+-   **`fluid_storybook` (This Project)**:
     -   Included as a Git submodule, a local path repository in `composer.json`, or simply copied in (submodule or path repo is cleaner for updates).
     -   The Storybook instance within this extension would be the one users run.
 -   **`my_example_sitepackage` (A Custom Example Site Package)**:
@@ -38,7 +38,7 @@ The example repository would be a self-contained TYPO3 project.
         -   **Configuration**: Any necessary `ext_localconf.php` or `ext_tables.php` (or `Configuration/...` YAML files for v12).
 
 ### 3. Storybook Configuration in the Example
--   The Storybook instance run from `my_fluid_storybook/Resources/Public/Storybook/` would be pre-configured with stories that render templates from `my_example_sitepackage`.
+-   The Storybook instance run from `fluid_storybook/Resources/Public/Storybook/` would be pre-configured with stories that render templates from `my_example_sitepackage`.
 -   **Stories**:
     -   Example stories for each of the templates in `my_example_sitepackage`.
     -   These stories would demonstrate:
@@ -46,21 +46,21 @@ The example repository would be a self-contained TYPO3 project.
         -   Using different `argTypes` effectively.
         -   Theming (if applicable to the example templates).
         -   Action logging for interactive elements.
--   **Template Manifest (Future)**: Once the template manifest generation and consumption are fully implemented in `my_fluid_storybook`, the example repository would showcase this feature, perhaps by pre-generating the manifest or showing how to use it to easily create stories.
+-   **Template Manifest (Future)**: Once the template manifest generation and consumption are fully implemented in `fluid_storybook`, the example repository would showcase this feature, perhaps by pre-generating the manifest or showing how to use it to easily create stories.
 
 ### 4. Documentation (`README.md` of the Example Repository)
 -   **Clear Setup Instructions**:
     -   How to clone the repository.
     -   Step-by-step guide for setting up the local environment (DDEV/Docker commands: `ddev start`, `ddev composer install`, etc.).
     -   TYPO3 installation steps (e.g., `ddev exec ./vendor/bin/typo3 setup`).
-    -   How to install Storybook dependencies (`ddev npm install --prefix packages/my_fluid_storybook/Resources/Public/Storybook`).
+    -   How to install Storybook dependencies (`ddev npm install --prefix packages/fluid_storybook/Resources/Public/Storybook`).
 -   **Running Storybook**:
     -   Command to start the Storybook development server (`ddev npm run storybook --prefix ...`).
 -   **Project Overview**:
-    -   Explanation of the included extensions (`my_fluid_storybook`, `my_example_sitepackage`).
+    -   Explanation of the included extensions (`fluid_storybook`, `my_example_sitepackage`).
     -   How the Fluid templates from `my_example_sitepackage` are rendered in Storybook.
 -   **Key Features Demonstrated**: Briefly list what users can explore (specific template examples, theming, actions, etc.).
--   **Link to `my_fluid_storybook` Repository**: A prominent link to the main `my_fluid_storybook` GitHub repository for issues, contributions, and detailed documentation of the core extension.
+-   **Link to `fluid_storybook` Repository**: A prominent link to the main `fluid_storybook` GitHub repository for issues, contributions, and detailed documentation of the core extension.
 
 ### 5. Licensing
 -   The example repository should also have a clear license (e.g., MIT or GPL, consistent with the main extension).
@@ -68,7 +68,7 @@ The example repository would be a self-contained TYPO3 project.
 ## Benefits of this Approach
 -   **Practical Demonstration**: Shows a working, non-trivial use case.
 -   **Reproducible Environment**: DDEV/Docker ensures users can get it running quickly.
--   **Focus on Integration**: Highlights how `my_fluid_storybook` integrates with a typical site package structure.
+-   **Focus on Integration**: Highlights how `fluid_storybook` integrates with a typical site package structure.
 -   **Learning Resource**: Serves as a valuable learning tool for users.
 
 ---

@@ -10,7 +10,7 @@ The primary goal is to simplify the process of finding and using Fluid templates
 
 ### 1. TYPO3 API Endpoint for Template Listing
 
--   **Concept**: Create a new API endpoint in the `my_fluid_storybook` extension (e.g., `/api/fluid/list-templates`).
+-   **Concept**: Create a new API endpoint in the `fluid_storybook` extension (e.g., `/api/fluid/list-templates`).
 -   **Functionality**:
     -   This endpoint would scan registered/active TYPO3 extensions.
     -   For each extension, it would look for Fluid files in standard locations:
@@ -82,7 +82,7 @@ Assuming a manifest (either from API or static file) is available:
 A combination might be best:
 
 1.  **Develop a TYPO3 Service/Utility** responsible for scanning and listing templates. This core logic can be reused. *(Partially addressed by the logic within the current CLI command, but could be further modularized).*
-2.  **Implement a CLI Command** (`storybook:generate-template-manifest`) that uses this service to generate a `template-manifest.json` within the `my_fluid_storybook` extension's `Resources/Public/Storybook/` directory. This is the primary recommended way for production/CI. *(A basic version of this CLI command has been implemented. It can scan specified extensions or all active non-system extensions.)*
+2.  **Implement a CLI Command** (`storybook:generate-template-manifest`) that uses this service to generate a `template-manifest.json` within the `fluid_storybook` extension's `Resources/Public/Storybook/` directory. This is the primary recommended way for production/CI. *(A basic version of this CLI command has been implemented. It can scan specified extensions or all active non-system extensions.)*
 3.  **Optionally, provide an API Endpoint** (`/api/fluid/list-templates`) that uses the same service, primarily for dynamic discovery during local development if explicitly enabled. This endpoint should have clear security warnings and possibly be disabled by default. *(Not yet implemented).*
 4.  Storybook then primarily relies on the `template-manifest.json`. *(Basic consumption of the manifest is implemented in `preview.js` for global availability, by the "Manifest Driven Story", and by the experimental "Fluid Templates" panel).*
 

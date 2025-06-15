@@ -41,7 +41,7 @@ const Template = (args, { loaded }) => { // Use Storybook loader pattern
 
   // Pass the fetched record data to the Fluid template
   ft({
-    templatePath: 'EXT:my_fluid_storybook/Resources/Private/Templates/CeTextMedia.html',
+    templatePath: 'EXT:fluid_storybook/Resources/Private/Templates/CeTextMedia.html',
     variables: { record: loaded.recordData }
   })
     .then(html => {

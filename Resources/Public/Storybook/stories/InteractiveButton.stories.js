@@ -59,7 +59,7 @@ const Template = (args) => {
 
 export const Default = Template.bind({});
 Default.args = {
-  templatePath: 'EXT:my_fluid_storybook/Resources/Private/Templates/InteractiveButton.html',
+  templatePath: 'EXT:fluid_storybook/Resources/Private/Templates/InteractiveButton.html',
   headline: 'Button with Actions',
   // Storybook will automatically provide mock functions for these actions
   // if not explicitly passed, thanks to `action: '...'` in argTypes.

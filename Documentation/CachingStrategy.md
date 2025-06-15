@@ -8,7 +8,7 @@ To reduce server load and decrease response times by serving previously rendered
 
 ## Proposed Caching Mechanism (Server-Side)
 
-The caching will be implemented within the `FluidRenderApiController` in the `my_fluid_storybook` TYPO3 extension.
+The caching will be implemented within the `FluidRenderApiController` in the `fluid_storybook` TYPO3 extension.
 
 ### 1. Using TYPO3 Caching Framework
 

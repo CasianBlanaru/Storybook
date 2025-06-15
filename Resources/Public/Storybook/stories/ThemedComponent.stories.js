@@ -32,6 +32,6 @@ const Template = (args) => {
 
 export const Default = Template.bind({});
 Default.args = {
-  templatePath: 'EXT:my_fluid_storybook/Resources/Private/Templates/ThemedComponent.html',
+  templatePath: 'EXT:fluid_storybook/Resources/Private/Templates/ThemedComponent.html',
   headline: 'Themed Component Example',
 };

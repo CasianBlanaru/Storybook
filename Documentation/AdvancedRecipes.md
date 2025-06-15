@@ -1,6 +1,6 @@
 # Advanced Recipes & Practical Guides
 
-This document provides practical recipes and guides for leveraging the features of the `my_fluid_storybook` integration to achieve common development tasks.
+This document provides practical recipes and guides for leveraging the features of the `fluid_storybook` integration to achieve common development tasks.
 
 ## Recipe 1: Story for a `tt_content` Element with Live TYPO3 Data
 

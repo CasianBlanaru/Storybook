@@ -3,12 +3,12 @@ fluid_storybook_render:
   path: '/api/fluid/render'
   methods: [GET] # Or [GET, POST] if you plan to support POST
   defaults:
-    _controller: 'MyVendor\MyFluidStorybook\Controller\FluidRenderApiController::renderAction'
+    _controller: 'Vendor\FluidStorybook\Controller\FluidRenderApiController::renderAction'
 
 fluid_storybook_data_record:
   path: '/api/fluid/data/{tableName}/{uid}'
   methods: [GET]
   defaults:
-    _controller: 'MyVendor\MyFluidStorybook\Controller\DataApiController::getRecordAction'
+    _controller: 'Vendor\FluidStorybook\Controller\DataApiController::getRecordAction'
   requirements:
     uid: '\d+' # Ensure UID is an integer

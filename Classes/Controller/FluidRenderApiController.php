@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace MyVendor\MyFluidStorybook\Controller;
+namespace Vendor\FluidStorybook\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

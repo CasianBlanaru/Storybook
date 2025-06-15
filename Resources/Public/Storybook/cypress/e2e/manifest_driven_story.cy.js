@@ -28,7 +28,7 @@ describe('ManifestDrivenStory Interaction', () => {
   });
 
   it('should render SimpleStory.html with variables when selected', () => {
-    const targetTemplatePath = 'EXT:my_fluid_storybook/Resources/Private/Templates/SimpleStory.html';
+    const targetTemplatePath = 'EXT:fluid_storybook/Resources/Private/Templates/SimpleStory.html';
     const testHeadline = 'Cypress Test for SimpleStory';
     const testContent = "Content from Cypress test";
 
@@ -61,7 +61,7 @@ describe('ManifestDrivenStory Interaction', () => {
 
     // Alternative: Test the outcome if the panel *had* selected a template.
     // If panel sets `panelSelectedTemplatePath` global, and story uses it:
-    // const panelSelectedPath = 'EXT:my_fluid_storybook/Resources/Private/Templates/ThemedComponent.html';
+    // const panelSelectedPath = 'EXT:fluid_storybook/Resources/Private/Templates/ThemedComponent.html';
     // const panelTestHeadline = 'Panel Selected Themed Component';
 
     // To test this properly, we'd need to either:
@@ -76,7 +76,7 @@ describe('ManifestDrivenStory Interaction', () => {
     // any template correctly.
 
     // Let's re-purpose this to select another template using the story's own controls.
-    const targetTemplatePath = 'EXT:my_fluid_storybook/Resources/Private/Templates/ThemedComponent.html';
+    const targetTemplatePath = 'EXT:fluid_storybook/Resources/Private/Templates/ThemedComponent.html';
     const testHeadline = 'Cypress Test for ThemedComponent';
     const variables = { headline: testHeadline };
 

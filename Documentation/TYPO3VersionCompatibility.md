@@ -1,6 +1,6 @@
 # TYPO3 Version Compatibility Analysis (v12, v11, v10)
 
-This document analyzes the feasibility and potential challenges of making the `my_fluid_storybook` extension compatible with TYPO3 v11 and v10, in addition to its current v12 support.
+This document analyzes the feasibility and potential challenges of making the `fluid_storybook` extension compatible with TYPO3 v11 and v10, in addition to its current v12 support.
 
 ## 1. PHP Version Requirements
 
@@ -8,7 +8,7 @@ This document analyzes the feasibility and potential challenges of making the `m
 -   **TYPO3 v11**: Requires PHP 7.4 - 8.1 (as of TYPO3 11.5 LTS).
 -   **TYPO3 v10**: Requires PHP 7.2 - 7.4 (as of TYPO3 10.4 LTS).
 
-**Current Codebase Analysis (my_fluid_storybook):**
+**Current Codebase Analysis (fluid_storybook):**
 -   The current PHP code uses features generally compatible with PHP 7.4+ (TYPO3 v11's minimum).
     -   Constructor property promotion (`private readonly PackageManager $packageManager` in `GenerateStorybookManifestCommand`) is PHP 8.0+.
     -   Readonly properties (`readonly`) are PHP 8.1+.
@@ -73,7 +73,7 @@ This document analyzes the feasibility and potential challenges of making the `m
     },
     "extra": {
       "typo3/cms": {
-        "extension-key": "my_fluid_storybook",
+        "extension-key": "fluid_storybook",
         "cms-package-dir": "{$vendor-dir}/typo3/cms",
         "web-dir": ".Build/Web"
       }
@@ -101,10 +101,10 @@ This document analyzes the feasibility and potential challenges of making the `m
     -   Supporting **v11 and v12** is more feasible.
     -   Supporting **v10** as well significantly increases complexity.
 2.  **Conditional Logic**: Use `TYPO3\CMS\Core\Core\Environment::isVersion()` or `TYPO3_branch` checks for minor API differences or registration methods if absolutely necessary, but try to avoid excessive branching in code logic.
-3.  **Separate Branches/Releases**: For very significant differences (like targeting v10 vs v11/v12), maintaining separate major versions of the extension aligned with TYPO3 major versions might be cleaner (e.g., `my_fluid_storybook` v1.x for TYPO3 v11, v2.x for TYPO3 v12).
+3.  **Separate Branches/Releases**: For very significant differences (like targeting v10 vs v11/v12), maintaining separate major versions of the extension aligned with TYPO3 major versions might be cleaner (e.g., `fluid_storybook` v1.x for TYPO3 v11, v2.x for TYPO3 v12).
 4.  **Focus on PSR Standards**: Using PSR-15 middleware for the API endpoint could improve compatibility and modernity across versions (v10+).
 
-## Conclusion for `my_fluid_storybook`
+## Conclusion for `fluid_storybook`
 
 -   **Supporting TYPO3 v11 alongside v12**: Achievable with moderate effort, primarily refactoring PHP 8.0/8.1 features and testing API/routing configurations.
 -   **Adding TYPO3 v10 support**: High effort. Would require significant PHP downgrades and changes to command/routing registration. This might compromise code quality and modern practices if trying to maintain a single codebase. It might be better to consider a separate, simplified version or branch for v10 if essential.

@@ -1,5 +1,5 @@
 {
-    "name": "myvendor/my-fluid-storybook",
+    "name": "vendor/fluid-storybook",
     "type": "typo3-cms-extension",
     "description": "TYPO3 Extension to render Fluid templates in Storybook for component-driven development.",
     "require": {
@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "MyVendor\\MyFluidStorybook\\": "Classes/"
+            "Vendor\\FluidStorybook\\": "Classes/"
         }
     },
     "scripts": {
@@ -27,7 +27,13 @@
     },
     "extra": {
         "typo3/cms": {
-            "extension-key": "my_fluid_storybook"
+            "extension-key": "fluid_storybook"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "typo3/class-alias-loader": true,
+            "typo3/cms-composer-installers": true
         }
     }
 }
