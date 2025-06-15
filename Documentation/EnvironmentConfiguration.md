@@ -117,6 +117,76 @@ environment:
   - FLUID_STORYBOOK_CORS_ALLOWED_ORIGINS=http://localhost:6006
 ```
 
+## Production Settings - Implementiert ✅
+
+### Optimierte Konfiguration für Production
+
+Die Extension bietet jetzt **spezielle Production-Settings** mit optimierten Cache-Laufzeiten, CORS-Sicherheit und Performance-Monitoring:
+
+#### 🚀 **Quick Setup für Production**
+
+1. **Umgebungsvariablen konfigurieren:**
+   ```bash
+   # Kopieren Sie die Production-Vorlage
+   cp Configuration/Environment/production.env.example .env
+   
+   # Anpassen der URLs für Ihre Domain
+   FLUID_STORYBOOK_TYPO3_BASE_URL=https://ihre-typo3-site.com
+   FLUID_STORYBOOK_CORS_ALLOWED_ORIGINS=https://storybook.ihre-typo3-site.com
+   ```
+
+2. **Cache-Optimierung:**
+   ```bash
+   # Erweiterte Cache-Laufzeit für Production (2 Stunden)
+   FLUID_STORYBOOK_CACHE_LIFETIME=7200
+   
+   # Performance-Monitoring deaktivieren für bessere Performance
+   FLUID_STORYBOOK_PERFORMANCE_MONITORING=false
+   ```
+
+3. **Security-Settings:**
+   ```bash
+   # Reduzierte Rate Limits für Production
+   FLUID_STORYBOOK_RATE_LIMIT_MAX_REQUESTS=50
+   FLUID_STORYBOOK_RATE_LIMIT_WINDOW_MINUTES=10
+   ```
+
+#### 🔧 **Verschiedene Hosting-Szenarien**
+
+**Szenario 1: Hauptseite + Storybook Subdomain**
+```bash
+FLUID_STORYBOOK_TYPO3_BASE_URL=https://example.com
+FLUID_STORYBOOK_CORS_ALLOWED_ORIGINS=https://storybook.example.com
+```
+
+**Szenario 2: Getrennte Domains**
+```bash
+FLUID_STORYBOOK_TYPO3_BASE_URL=https://cms.example.com
+FLUID_STORYBOOK_CORS_ALLOWED_ORIGINS=https://components.example.com
+```
+
+**Szenario 3: CDN mit mehreren Umgebungen**
+```bash
+FLUID_STORYBOOK_TYPO3_BASE_URL=https://api.example.com
+FLUID_STORYBOOK_CORS_ALLOWED_ORIGINS=https://storybook.example.com,https://staging-storybook.example.com
+```
+
+#### ⚡ **Performance-Optimierungen**
+
+- **Cache-Lifetime**: 7200 Sekunden (2 Stunden) für Production
+- **Rate Limiting**: 50 Requests pro 10 Minuten (statt 100/15min)
+- **CORS-Kontrolle**: Nur konfigurierte Domains erlaubt
+- **Performance-Monitoring**: Optional deaktivierbar
+- **CacheOptimizationService**: Automatische Cache-Verwaltung mit Environment-Awareness
+
+#### 🧪 **Integrierte Tests**
+
+Alle Production-Settings werden durch umfassende Tests abgedeckt:
+- ✅ ExtensionConfigurationTest (PHP Unit Tests)
+- ✅ SecurityMiddlewareTest (PHP Unit Tests) 
+- ✅ CacheOptimizationServiceTest (PHP Unit Tests)
+- ✅ FluidTemplate Tests (JavaScript Jest Tests)
+
 ## Production Recommendations
 
 For production environments:
@@ -135,4 +205,7 @@ FLUID_STORYBOOK_CACHE_LIFETIME=7200
 # Adjust rate limiting
 FLUID_STORYBOOK_RATE_LIMIT_MAX_REQUESTS=50
 FLUID_STORYBOOK_RATE_LIMIT_WINDOW_MINUTES=10
+
+# Disable performance monitoring for production
+FLUID_STORYBOOK_PERFORMANCE_MONITORING=false
 ``` 
