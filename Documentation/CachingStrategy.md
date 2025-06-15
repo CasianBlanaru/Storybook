@@ -13,7 +13,7 @@ The caching will be implemented within the `FluidRenderApiController` in the `fl
 ### 1. Using TYPO3 Caching Framework
 
 -   **Cache Frontend/Backend**: Utilize TYPO3's Caching Framework. A `VariableFrontend` is suitable for storing serialized HTML content. The backend can be database-based, file-based, or any other backend configured in the TYPO3 instance (e.g., Redis, APCu).
--   **Cache Instance**: A dedicated cache instance should be registered for this purpose (e.g., `myfluidstorybook_renderresults`). This allows for specific configuration and clearing of this cache.
+-   **Cache Instance**: A dedicated cache instance should be registered for this purpose (e.g., `luidstorybookrenderresults`). This allows for specific configuration and clearing of this cache.
 
 ### 2. Cache Key Generation
 
@@ -28,7 +28,7 @@ Example Cache Identifier: `sha256(templatePath + ":" + sha256(json_encode(variab
 
 -   **Lifetime**: Cache entries should have a configurable lifetime (e.g., 24 hours, 1 week). This can be set when writing to the cache.
 -   **Invalidation**:
-    -   **Global**: The cache can be cleared via the TYPO3 backend's cache management tools by clearing the `myfluidstorybook_renderresults` cache.
+    -   **Global**: The cache can be cleared via the TYPO3 backend's cache management tools by clearing the `luidstorybookrenderresults` cache.
     -   **Automatic (Content Changes)**: True automatic invalidation when a Fluid template file changes or related data changes is complex with `StandaloneView` as it doesn't have deep context awareness.
         -   A simple approach is to rely on manual cache clearing or time-based expiration.
         -   During development, it's often useful to disable caching or have a very short cache lifetime. This could be a configuration option for the extension.
@@ -38,7 +38,7 @@ Example Cache Identifier: `sha256(templatePath + ":" + sha256(json_encode(variab
 
 1.  Receive `templatePath` and `variables` from the request.
 2.  Generate the cache identifier.
-3.  Attempt to fetch an entry from the `myfluidstorybook_renderresults` cache using this identifier.
+3.  Attempt to fetch an entry from the `luidstorybookrenderresults` cache using this identifier.
 4.  **Cache Hit**: If a valid cache entry exists, return the cached HTML content.
 5.  **Cache Miss**:
     -   Render the Fluid template as usual using `StandaloneView`.

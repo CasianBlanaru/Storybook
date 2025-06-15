@@ -104,10 +104,13 @@ const pendingRequests = new Map<string, Promise<string>>();
  * .catch(error => console.error(error.message, error.details));
  * ```
  */
+// Import configuration (CommonJS for Jest compatibility)
+const FluidStorybookConfig = require('./config.ts');
+
 export async function FluidTemplate({
   templatePath,
   variables = {},
-  apiEndpoint = '/api/fluid/render' // Default API endpoint
+  apiEndpoint = FluidStorybookConfig.getApiEndpoint() // Use configuration default
 }: FluidTemplateOptions): Promise<string> {
   if (!templatePath) {
     const error: FluidTemplateError = {
@@ -115,7 +118,9 @@ export async function FluidTemplate({
       type: "ConfigurationError",
       details: "The 'templatePath' parameter was not provided to the FluidTemplate function."
     };
-    console.error(error.message, error.details);
+    if (FluidStorybookConfig.shouldLogToConsole()) {
+      console.error(error.message, error.details);
+    }
     return Promise.reject(error);
   }
 
@@ -155,14 +160,18 @@ export async function FluidTemplate({
         }
       } catch (e) {
         // Parsing response.json() failed or response.text() failed after that
-        console.warn('FluidTemplate: Could not parse error response body as JSON.', e);
+        if (FluidStorybookConfig.shouldLogToConsole()) {
+          console.warn('FluidTemplate: Could not parse error response body as JSON.', e);
+        }
         try {
              // Try to get text response directly if JSON parsing was the issue
              const textResponse = await response.text();
              errorDetails = textResponse || `Status: ${response.status} ${response.statusText}. URL: ${response.url}`; // Fallback if text() also empty
         } catch (textErr) {
              // If response.text() also fails, stick with the original errorDetails
-             console.warn('FluidTemplate: Could not parse error response body as text either.', textErr);
+             if (FluidStorybookConfig.shouldLogToConsole()) {
+               console.warn('FluidTemplate: Could not parse error response body as text either.', textErr);
+             }
         }
       }
 
@@ -172,14 +181,18 @@ export async function FluidTemplate({
         status: response.status,
         details: errorDetails
       };
-      console.error(error.message, `Status: ${error.status}`, `Details: ${error.details}`);
+      if (FluidStorybookConfig.shouldLogToConsole()) {
+        console.error(error.message, `Status: ${error.status}`, `Details: ${error.details}`);
+      }
       return Promise.reject(error);
     }
 
     const renderedHtml = await response.text();
     // Optional: Warn if response is OK but content is empty and seems like JSON
     if (renderedHtml.trim() === '' && response.headers.get('Content-Type')?.includes('application/json')) {
-         console.warn(`FluidTemplate: Received empty response for template '${templatePath}', but status was OK. Check API and template.`);
+         if (FluidStorybookConfig.shouldLogToConsole()) {
+           console.warn(`FluidTemplate: Received empty response for template '${templatePath}', but status was OK. Check API and template.`);
+         }
     }
     return renderedHtml;
 
@@ -189,7 +202,9 @@ export async function FluidTemplate({
       type: "NetworkError",
       details: (networkError instanceof Error ? networkError.message : String(networkError)) || "Could not connect to the API endpoint."
     };
-    console.error(error.message, `Original error:`, networkError);
+    if (FluidStorybookConfig.shouldLogToConsole()) {
+      console.error(error.message, `Original error:`, networkError);
+    }
     return Promise.reject(error);
   }
 }

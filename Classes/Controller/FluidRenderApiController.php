@@ -12,6 +12,7 @@ use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Fluid\View\StandaloneView;
+use Vendor\FluidStorybook\Configuration\ExtensionConfiguration;
 
 /**
  * API Controller for rendering Fluid templates.
@@ -29,15 +30,13 @@ class FluidRenderApiController extends ActionController
 
     /**
      * @var bool Enables or disables caching for rendered templates.
-     * @todo Make this configurable via extension settings.
      */
     protected bool $enableCache = true;
 
     /**
-     * @var int Default cache lifetime in seconds for rendered templates.
-     * @todo Make this configurable via extension settings.
+     * @var int Cache lifetime in seconds for rendered templates.
      */
-    protected int $cacheLifetime = 3600; // 1 hour default
+    protected int $cacheLifetime;
 
     /**
      * @var VariableFrontend The cache frontend instance for storing render results.
@@ -46,12 +45,14 @@ class FluidRenderApiController extends ActionController
 
     /**
      * Constructor.
-     * Initializes the cache frontend.
+     * Initializes the cache frontend and configuration.
      */
     public function __construct()
     {
         $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
-        $this->renderCache = $cacheManager->getCache('myfluidstorybook_renderresults');
+        $cacheIdentifier = ExtensionConfiguration::get('cache_identifier');
+        $this->renderCache = $cacheManager->getCache($cacheIdentifier);
+        $this->cacheLifetime = ExtensionConfiguration::getCacheLifetime();
     }
 
     /**

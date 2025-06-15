@@ -57,7 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `Documentation/AutomaticTemplateDiscovery.md` outlining conceptual strategy for template scanning.
 - `Documentation/CachingStrategy.md` detailing server-side caching approach.
-- Basic server-side caching for the `/api/fluid/render` endpoint using TYPO3 Caching Framework (`myfluidstorybook_renderresults` cache registered in `ext_localconf.php`).
+- Basic server-side caching for the `/api/fluid/render` endpoint using TYPO3 Caching Framework (`fluid_storybook_renderresults` cache registered in `ext_localconf.php`).
 - `X-FluidStorybook-Cache` debug header for API responses.
 - Initial TypeScript support: converted `FluidTemplate.js` to `FluidTemplate.ts` with type definitions.
 - `typescript` added to Storybook's `package.json`.
