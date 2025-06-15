@@ -10,25 +10,61 @@ use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController; // Still using ActionController for simplicity of setup
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
+/**
+ * API Controller for rendering Fluid templates.
+ *
+ * This controller provides an endpoint to render arbitrary Fluid templates
+ * with provided variables, primarily for use with Storybook integration.
+ * It includes basic caching functionality.
+ */
 class FluidRenderApiController extends ActionController
 {
+    /**
+     * Prefix for cache identifiers used by this controller.
+     */
     protected const CACHE_IDENTIFIER_PREFIX = 'fluid_storybook_render_';
-    // TODO: Make caching configurable via extension settings (enabled, lifetime)
-    protected bool $enableCache = true; // Basic toggle for now
+
+    /**
+     * @var bool Enables or disables caching for rendered templates.
+     * @todo Make this configurable via extension settings.
+     */
+    protected bool $enableCache = true;
+
+    /**
+     * @var int Default cache lifetime in seconds for rendered templates.
+     * @todo Make this configurable via extension settings.
+     */
     protected int $cacheLifetime = 3600; // 1 hour default
 
+    /**
+     * @var VariableFrontend The cache frontend instance for storing render results.
+     */
     protected VariableFrontend $renderCache;
 
-    public function __construct() // Removed CacheManager from constructor
+    /**
+     * Constructor.
+     * Initializes the cache frontend.
+     */
+    public function __construct()
     {
-        // Cache name should be registered in ext_localconf.php or ext_tables.php
         $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
         $this->renderCache = $cacheManager->getCache('myfluidstorybook_renderresults');
     }
 
+    /**
+     * Renders a Fluid template based on request parameters.
+     * Handles template path validation, variable assignment, rendering, and caching.
+     *
+     * Expected query parameters:
+     * - `templatePath` (string, required): The `EXT:...` path to the Fluid template.
+     * - `variables` (string, optional): A JSON string of variables to assign to the template.
+     *
+     * @param ServerRequestInterface $request The server request.
+     * @return ResponseInterface The HTTP response, either HTML content of the rendered template or a JSON error.
+     */
     public function renderAction(ServerRequestInterface $request): ResponseInterface
     {
         $queryParams = $request->getQueryParams();
@@ -38,27 +74,25 @@ class FluidRenderApiController extends ActionController
         if ($templatePath === null) {
             return new JsonResponse(['error' => 'Parameter "templatePath" is missing.'], 400);
         }
-        if (!str_starts_with($templatePath, 'EXT:') || str_contains($templatePath, '..')) {
-            return new JsonResponse(['error' => 'Invalid "templatePath". Must start with EXT: and not contain ".."'], 400);
+        if (!is_string($templatePath) || !str_starts_with($templatePath, 'EXT:') || str_contains($templatePath, '..')) {
+            return new JsonResponse(['error' => 'Invalid "templatePath". Must be a string, start with EXT:, and not contain ".."'], 400);
         }
 
-        $variablesArray = json_decode($variablesJson, true);
+        /** @var array<string, mixed> $variables */
+        $variables = json_decode($variablesJson, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            return new JsonResponse(['error' => 'Invalid JSON in "variables" parameter.'], 400);
+            return new JsonResponse(['error' => 'Invalid JSON in "variables" parameter. Error: ' . json_last_error_msg()], 400);
         }
-        $variables = $variablesArray ?? []; // Ensure it's an array
+        // $variables is already an array due to true in json_decode, or null if error, handled above.
 
-        // Generate Cache Identifier
         $cacheIdentifier = self::CACHE_IDENTIFIER_PREFIX . hash('sha256', $templatePath . ':' . hash('sha256', $variablesJson));
 
-        // Attempt to fetch from cache
         if ($this->enableCache && $this->renderCache->has($cacheIdentifier)) {
             $cachedContent = $this->renderCache->get($cacheIdentifier);
             if (is_string($cachedContent)) {
                 $response = new Response();
                 $response->getBody()->write($cachedContent);
-                // Add a header to indicate cache hit for debugging
-                return $response->withHeader('Content-Type', 'text/html; charset=utf-f8') // Corrected charset
+                return $response->withHeader('Content-Type', 'text/html; charset=utf-8')
                                  ->withHeader('X-FluidStorybook-Cache', 'hit');
             }
         }
@@ -76,7 +110,6 @@ class FluidRenderApiController extends ActionController
 
             $renderedContent = $standaloneView->render();
 
-            // Store in cache
             if ($this->enableCache) {
                 $this->renderCache->set($cacheIdentifier, $renderedContent, [], $this->cacheLifetime);
             }
@@ -84,10 +117,14 @@ class FluidRenderApiController extends ActionController
             $response = new Response();
             $response->getBody()->write($renderedContent);
             return $response->withHeader('Content-Type', 'text/html; charset=utf-8')
-                             ->withHeader('X-FluidStorybook-Cache', 'miss'); // Debug header
+                             ->withHeader('X-FluidStorybook-Cache', 'miss');
 
-        } catch (\Exception $e) {
-            // Log the exception internally if possible
+        } catch (\Throwable $e) { // Catching Throwable for broader error handling
+            // Log the exception internally if possible using TYPO3's Logger
+            GeneralUtility::makeInstance(\TYPO3\CMS\Core\Log\LogManager::class)
+                ->getLogger(__CLASS__)
+                ->error('Fluid rendering failed: ' . $e->getMessage(), ['exception' => $e]);
+
             return new JsonResponse(['error' => 'Failed to render Fluid template.', 'details' => $e->getMessage()], 500);
         }
     }

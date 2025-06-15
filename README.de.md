@@ -1,43 +1,46 @@
-[Diese Readme auf Deutsch lesen](README.de.md)
+[Read this README in English](README.md)
 
 ---
-# TYPO3 Fluid Storybook Integration
+*Hinweis: Dies ist eine maschinell übersetzte Platzhalterversion des deutschen README. Eine menschliche Übersetzung wird für die endgültige Version benötigt.*
+---
+
+# TYPO3 Fluid Storybook Integration (DE Placeholder)
 
 This project allows developers to render and interact with TYPO3 Fluid templates directly within a Storybook environment. This facilitates component-driven development and testing for TYPO3 frontends.
 
-## Project Purpose
+## Projektzweck (DE Placeholder)
 
 - To enable isolated development and testing of Fluid templates.
 - To provide a living style guide for TYPO3 frontend components.
 - To improve collaboration between designers and developers.
 - To leverage Storybook's rich ecosystem of addons and tools for UI development.
 
-## Current Status: Alpha
+## Aktueller Status: Alpha (DE Placeholder)
 
 This integration is in its early stages of development (Alpha). Core functionality for rendering templates is available, but many features and improvements are still planned.
 
-## Dependencies
+## Abhängigkeiten (DE Placeholder)
 
 - **TYPO3:** ^12.4
 - **Node.js:** ^18.x || ^20.x (or newer LTS versions)
 - **Storybook:** ^8.x (as per the `package.json` setup)
 - **PHP:** ^8.1 (compatible with TYPO3 12.4)
 
-## Getting Started
+## Erste Schritte (DE Placeholder)
 
-### 1. Install the TYPO3 Extension
+### 1. Installieren der TYPO3-Erweiterung (DE Placeholder)
 
-1.  **Download/Clone:** Place this extension (`my_fluid_storybook`) into your TYPO3 project's `packages/` directory (or `typo3conf/ext/` for older non-composer setups, though composer is highly recommended).
+1.  **Herunterladen/Klonen:** Platzieren Sie diese Erweiterung (`my_fluid_storybook`) in das `packages/`-Verzeichnis Ihres TYPO3-Projekts (oder `typo3conf/ext/` bei älteren Setups ohne Composer, obwohl Composer dringend empfohlen wird).
     ```bash
-    # Example for composer-based TYPO3 projects
-    cd /path/to/your/typo3project/
-    # Assuming you have the extension source code available:
-    cp -r /path/to/my_fluid_storybook packages/
+    # Beispiel für Composer-basierte TYPO3-Projekte
+    cd /pfad/zu/ihrem/typo3projekt/
+    # Angenommen, Sie haben den Quellcode der Erweiterung verfügbar:
+    cp -r /pfad/zu/my_fluid_storybook packages/
     ```
-2.  **Activate:** In the TYPO3 backend, go to "Admin Tools" > "Extensions" and activate the "Fluid Storybook Integration" extension (key: `my_fluid_storybook`).
-    *This step ensures the API endpoint is registered.*
+2.  **Aktivieren:** Gehen Sie im TYPO3-Backend zu "Admin Tools" > "Extensions" und aktivieren Sie die Erweiterung "Fluid Storybook Integration" (Schlüssel: `my_fluid_storybook`).
+    *Dieser Schritt stellt sicher, dass der API-Endpunkt registriert wird.*
 
-### 2. Set Up and Run Storybook
+### 2. Storybook Einrichten und Ausführen (DE Placeholder)
 
 The Storybook setup is located within the extension at `Resources/Public/Storybook/`.
 
@@ -59,11 +62,11 @@ The Storybook setup is located within the extension at `Resources/Public/Storybo
     ```
     This will typically open Storybook in your browser at `http://localhost:6006`.
 
-## How to Use: `FluidTemplate` Function
+## How to Use: `FluidTemplate` Function (DE Placeholder)
 
 The core of this integration is the `FluidTemplate` JavaScript function. You use this function within your Storybook stories to render Fluid templates.
 
-### `FluidTemplate` API
+### `FluidTemplate` API (DE Placeholder)
 
 The `FluidTemplate` function is the primary way to render your Fluid templates in Storybook. It's an asynchronous JavaScript function that fetches rendered HTML from your TYPO3 instance.
 
@@ -323,9 +326,9 @@ You can generate or update the manifest by running the command from your TYPO3 p
 ./vendor/bin/typo3 storybook:generate-manifest my_sitepackage another_custom_ext
 ```
 
-The command will output the absolute path to the generated `template-manifest.json` file. This file is always saved inside the `my_fluid_storybook` extension's directory at the following relative path:
-`Resources/Public/Storybook/template-manifest.json`
-So, if your `my_fluid_storybook` extension is in `packages/my_fluid_storybook`, the full path would be `packages/my_fluid_storybook/Resources/Public/Storybook/template-manifest.json`.
+The command will output the path to the generated `template-manifest.json` file, which is always saved to:
+`packages/my_fluid_storybook/Resources/Public/Storybook/template-manifest.json`
+(Adjust path if your `my_fluid_storybook` extension is installed in a different location).
 
 ### Command Behavior
 
@@ -377,22 +380,10 @@ The above description reflects the enhanced command. The previous example output
 
 A story named "Manifest Driven Story" (`Resources/Public/Storybook/stories/ManifestDrivenStory.stories.js`) demonstrates how to use this generated manifest.
 - It attempts to fetch `template-manifest.json` when Storybook loads.
-- Its "Select Template" control is populated with template paths from the manifest.
+- It then populates a `select` dropdown in its "Controls" panel with the template paths found in the "templates" array of the manifest.
 - This allows you to choose a template from the dropdown and see it rendered.
 - **Note:** For the dropdown to be populated correctly, you must run the `storybook:generate-manifest` CLI command first. If the manifest is generated or updated after Storybook has already started and loaded the story, you might need to refresh your browser for the dropdown options to update.
 - The story provides a generic `variables` JSON input, as it cannot know the specific variables required by each template in the manifest. You'll need to adjust the `variables` input based on the selected template's needs.
-
-### Template Manifest Panel (Experimental)
-
-A panel labeled "Fluid Templates" is available in the Storybook addons area (usually at the bottom). This panel displays the contents of `template-manifest.json`.
-- It lists discovered Templates, Partials, and Layouts from all scanned extensions.
-- For "Templates", a "Select Template" button is available. Clicking this button will:
-    1. Update a hidden global Storybook argument (`panelSelectedTemplatePath`) with the chosen template's path.
-    2. Log this action to the console.
-    3. The "Manifest Driven Story" (if currently viewed or navigated to) will detect this global argument change and render the selected template.
-- If the manifest is not found or fails to load, an error message in the panel will guide you to run the TYPO3 CLI command `storybook:generate-manifest`.
-
-This panel provides an interactive way to browse available Fluid resources and directly influence the "Manifest Driven Story".
 
 ## Troubleshooting Common Errors
 

@@ -5,7 +5,8 @@ module.exports = {
     '@storybook/addon-links',
     '@storybook/addon-essentials',
        // '@storybook/addon-interactions',
-       '@storybook/addon-a11y', // Add this line
+       '@storybook/addon-a11y',
+       './.storybook/addons/template-manifest-panel/preset', // Add this line for the local addon
   ],
   framework: {
     name: '@storybook/html-webpack5', // Or appropriate for plain JS/HTML

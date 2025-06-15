@@ -28,11 +28,12 @@ jobs:
             -not -path "./vendor/*" \
             -not -path "./Resources/Public/Storybook/node_modules/*" \
             -not -path "./Resources/Public/Storybook/storybook-static/*" \
+            -not -path "./Resources/Public/Storybook/cypress/*" \ # Exclude cypress config/support files if they are PHP
             -exec php -l {} \;
           # The find command will exit with non-zero if php -l finds an error in any file.
 
-  storybook-tests:
-    name: Storybook (Jest) Tests
+  storybook-jest-tests: # Renamed for clarity
+    name: Storybook Jest Tests
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -53,3 +54,49 @@ jobs:
 
       - name: Run Jest tests
         run: npm test
+
+  storybook-e2e-cypress: # New job for Cypress
+    name: Storybook E2E Tests (Cypress)
+    runs-on: ubuntu-latest
+    # This job depends on the successful completion of storybook-jest-tests,
+    # though not strictly necessary as they test different things.
+    # Can run in parallel if preferred.
+    # needs: storybook-jest-tests
+    defaults:
+      run:
+        working-directory: ./Resources/Public/Storybook
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: Resources/Public/Storybook/package-lock.json
+
+      - name: Install dependencies (including Cypress)
+        run: npm ci
+
+      # Grant execute permission for Cypress binary if needed (sometimes required on CI)
+      # - name: Grant Cypress execute permission
+      #   run: chmod +x ./node_modules/.bin/cypress
+
+      - name: Run Cypress tests against static Storybook build
+        run: npm run test:e2e:ci
+        # This script (test:e2e:ci) handles:
+        # 1. Building Storybook to a static directory (storybook:build-static)
+        # 2. Serving this static directory (serve-static)
+        # 3. Running Cypress tests against the served instance (cy:run)
+        # start-server-and-test ensures server is up before tests run and shuts down after.
+
+      - name: Upload Cypress artifacts (screenshots/videos on failure)
+        uses: actions/upload-artifact@v3
+        if: failure() # Only upload if tests failed
+        with:
+          name: cypress-artifacts
+          path: |
+            Resources/Public/Storybook/cypress/screenshots
+            Resources/Public/Storybook/cypress/videos
+            # Videos are disabled in cypress.config.js, but path kept if re-enabled

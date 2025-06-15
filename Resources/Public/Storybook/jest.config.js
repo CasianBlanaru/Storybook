@@ -5,20 +5,8 @@ module.exports = {
   roots: ['../JavaScript/__tests__'], // Point to the directory where tests are located relative to this config
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', { 
-      tsconfig: {
-        compilerOptions: {
-          esModuleInterop: true,
-          skipLibCheck: true,
-          types: ['jest', 'node']
-        }
-      }
-    }]
+    '^.+\\.tsx?$': ['ts-jest', { /* ts-jest config options if needed */ }]
   },
-  setupFilesAfterEnv: ['<rootDir>/../JavaScript/__tests__/jest.setup.js'],
-  globals: {
-    'ts-jest': {
-      useESM: false
-    }
-  }
+  // Optional: Setup files, module name mapper if needed later
+  // setupFilesAfterEnv: ['./jest.setup.js'], // if you need setup files
 };

@@ -45,7 +45,7 @@ export interface FluidTemplateOptions {
  * Storybook to preview TYPO3 Fluid components.
  *
  * @async
- * @param {FluidTemplateOptions} options - The options for rendering the template, including `templatePath`, `variables`, and `apiEndpoint`.
+ * @param {FluidTemplateOptions} options - The options for rendering the template.
  * @returns {Promise<string>} A promise that resolves with the rendered HTML string.
  * @throws {FluidTemplateError} Rejects with a structured error object if rendering fails or parameters are invalid.
  *
@@ -62,7 +62,7 @@ export interface FluidTemplateOptions {
 export async function FluidTemplate({
   templatePath,
   variables = {},
-  apiEndpoint = '/api/fluid/render'
+  apiEndpoint = '/api/fluid/render' // Default API endpoint
 }: FluidTemplateOptions): Promise<string> {
   if (!templatePath) {
     const error: FluidTemplateError = {
@@ -75,12 +75,15 @@ export async function FluidTemplate({
   }
 
   try {
+    // Ensure variables is always an object, never null or undefined
+    const safeVariables = variables || {};
+    
     const params = new URLSearchParams();
     params.append('templatePath', templatePath);
-    params.append('variables', JSON.stringify(variables));
+    params.append('variables', JSON.stringify(safeVariables));
 
     const fetchUrl = `${apiEndpoint}?${params.toString()}`;
-    // console.log(`FluidTemplate: Fetching from ${fetchUrl}`);
+    // console.log(`FluidTemplate: Fetching from ${fetchUrl}`); // Optional: for debugging
 
     const response = await fetch(fetchUrl, {
       method: 'GET',
@@ -101,16 +104,20 @@ export async function FluidTemplate({
              errorDetails += ` Details: ${apiErrorJson.details}`;
           }
         } else {
+          // Attempt to get text if JSON parsing failed or didn't yield expected structure
           const textResponse = await response.text();
-          errorDetails = textResponse || errorDetails;
+          errorDetails = textResponse || errorDetails; // Use text if available, else original details
         }
       } catch (e) {
-        console.warn('FluidTemplate: Could not parse error response body.', e);
+        // Parsing response.json() failed or response.text() failed after that
+        console.warn('FluidTemplate: Could not parse error response body as JSON.', e);
         try {
+             // Try to get text response directly if JSON parsing was the issue
              const textResponse = await response.text();
-             errorDetails = textResponse || `Status: ${response.status} ${response.statusText}. URL: ${response.url}`;
+             errorDetails = textResponse || `Status: ${response.status} ${response.statusText}. URL: ${response.url}`; // Fallback if text() also empty
         } catch (textErr) {
-             // fallback to original
+             // If response.text() also fails, stick with the original errorDetails
+             console.warn('FluidTemplate: Could not parse error response body as text either.', textErr);
         }
       }
 
@@ -125,18 +132,19 @@ export async function FluidTemplate({
     }
 
     const renderedHtml = await response.text();
+    // Optional: Warn if response is OK but content is empty and seems like JSON
     if (renderedHtml.trim() === '' && response.headers.get('Content-Type')?.includes('application/json')) {
          console.warn(`FluidTemplate: Received empty response for template '${templatePath}', but status was OK. Check API and template.`);
     }
     return renderedHtml;
 
-  } catch (networkError: any) {
+  } catch (networkError: unknown) { // Catch as 'unknown' for type safety
     const error: FluidTemplateError = {
       message: `FluidTemplate Error: Network error while trying to fetch template '${templatePath}'.`,
       type: "NetworkError",
-      details: networkError.message || "Could not connect to the API endpoint."
+      details: (networkError instanceof Error ? networkError.message : String(networkError)) || "Could not connect to the API endpoint."
     };
-    console.error(error.message, `Original error: ${networkError.message}`);
+    console.error(error.message, `Original error:`, networkError);
     return Promise.reject(error);
   }
 }
