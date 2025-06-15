@@ -35,7 +35,52 @@ export interface FluidTemplateOptions {
    * @default "/api/fluid/render"
    */
   apiEndpoint?: string;
+  /**
+   * Whether to enable client-side caching for this request.
+   * @default true
+   */
+  enableCache?: boolean;
+  /**
+   * Cache timeout in milliseconds.
+   * @default 300000 (5 minutes)
+   */
+  cacheTimeout?: number;
+  /**
+   * AbortController signal for request cancellation.
+   */
+  signal?: AbortSignal;
 }
+
+// Client-side cache implementation
+class FluidTemplateCache {
+  private cache = new Map<string, { data: string; timestamp: number; timeout: number }>();
+
+  set(key: string, data: string, timeout: number): void {
+    this.cache.set(key, { data, timestamp: Date.now(), timeout });
+  }
+
+  get(key: string): string | null {
+    const entry = this.cache.get(key);
+    if (!entry) return null;
+    
+    if (Date.now() - entry.timestamp > entry.timeout) {
+      this.cache.delete(key);
+      return null;
+    }
+    
+    return entry.data;
+  }
+
+  clear(): void {
+    this.cache.clear();
+  }
+}
+
+// Global cache instance
+const templateCache = new FluidTemplateCache();
+
+// Debouncing for rapid successive calls
+const pendingRequests = new Map<string, Promise<string>>();
 
 /**
  * Fetches and renders a Fluid template from a TYPO3 API endpoint.

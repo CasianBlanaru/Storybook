@@ -1,0 +1,12 @@
+parameters:
+    level: 8
+    paths:
+        - Classes
+    bootstrapFiles:
+        - .Build/vendor/autoload.php
+    excludePaths:
+        - Tests/*
+    ignoreErrors:
+        - '#Call to an undefined method TYPO3\\CMS\\Core\\Cache\\Frontend\\FrontendInterface::#'
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false 
