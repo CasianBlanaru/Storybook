@@ -75,9 +75,12 @@ export async function FluidTemplate({
   }
 
   try {
+    // Ensure variables is always an object, never null or undefined
+    const safeVariables = variables || {};
+    
     const params = new URLSearchParams();
     params.append('templatePath', templatePath);
-    params.append('variables', JSON.stringify(variables));
+    params.append('variables', JSON.stringify(safeVariables));
 
     const fetchUrl = `${apiEndpoint}?${params.toString()}`;
     // console.log(`FluidTemplate: Fetching from ${fetchUrl}`); // Optional: for debugging

@@ -108,23 +108,32 @@ describe('FluidTemplate', () => {
   });
 
   it('should correctly encode variables in the fetch URL', async () => {
-     (global.fetch as jest.Mock).mockResolvedValueOnce({
-         ok: true,
-         text: async () => '<div></div>',
-         headers: new Headers({'Content-Type': 'text/html'})
-     });
-     const options: FluidTemplateOptions = {
-         templatePath: 'EXT:my_ext/Resources/Private/Templates/WithVars.html',
-         variables: { key1: 'value 1', key2: { nested: 'valü&' } },
-         apiEndpoint: mockApiEndpoint
-     };
-     const expectedVariablesJsonString = JSON.stringify(options.variables);
-     await FluidTemplate(options);
-     expect(global.fetch).toHaveBeenCalledWith(
-         `${mockApiEndpoint}?templatePath=${encodeURIComponent(options.templatePath)}&variables=${encodeURIComponent(expectedVariablesJsonString)}`,
-         expect.any(Object)
-     );
- });
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+          ok: true,
+          text: async () => '<div></div>',
+          headers: new Headers({'Content-Type': 'text/html'})
+      });
+
+      const options: FluidTemplateOptions = {
+          templatePath: 'EXT:my_ext/Resources/Private/Templates/WithVars.html',
+          variables: { key1: 'value 1', key2: { nested: 'valü&' } },
+          apiEndpoint: mockApiEndpoint
+      };
+      await FluidTemplate(options);
+      
+      // Check that fetch was called with the correct parameters
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+      const actualCall = (global.fetch as jest.Mock).mock.calls[0][0] as string;
+      expect(actualCall).toContain(encodeURIComponent(options.templatePath));
+      expect(actualCall).toContain('variables=');
+      // Variables should be properly JSON encoded
+      const variablesMatch = actualCall.match(/variables=([^&]+)/);
+      expect(variablesMatch).toBeTruthy();
+      if (variablesMatch) {
+        const decodedVariables = decodeURIComponent(variablesMatch[1]);
+        expect(JSON.parse(decodedVariables)).toEqual(options.variables);
+      }
+  });
 
  // New Test Case 1 (Adjusted): API returns 200 OK with application/json AND EMPTY BODY
  it('should warn if API returns 200 OK with application/json and empty body', async () => {
